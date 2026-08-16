@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "id": "91f8b8f6-f303-4940-8ba3-596999371ea9",
+      "name": "hero",
+      "type": "image",
+      "size": 69792,
+      "url": "/uploads/1786796271562-hero.webp",
+      "createdAt": "2026-08-15T12:17:51.565Z",
+      "usage": [],
+      "custom": true
+    }
+  ]
+}

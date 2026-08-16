@@ -1,0 +1,43 @@
+{
+  "testimonials": [
+    {
+      "firstName": "bachire",
+      "lastName": "ndiaye",
+      "country": "Sénégal",
+      "city": "ziguinchor",
+      "formation": "M en droit",
+      "school": "TES-etablissement",
+      "quote": "je suis content ",
+      "image": {
+        "url": "/images/students.jpg",
+        "alt": "merci"
+      },
+      "published": true,
+      "order": 1,
+      "featured": true,
+      "id": "9b86c55e-f751-4787-9c72-51b0c2a07b61"
+    }
+  ],
+  "page": {
+    "hero": {
+      "eyebrow": "Témoignages",
+      "title": "Les expèriences de ceux qui ont avancé avec Campus Way.",
+      "description": "Découvre prochainement les expèriences réelles des étudiants accompagnés par Campus Way."
+    },
+    "emptyState": {
+      "description": "Les témoignages des étudiants accompagnés par Campus Way seront publiés ici."
+    },
+    "cta": {
+      "eyebrow": "Ton projet",
+      "title": "Ton projet peut commencer ici.",
+      "description": "Parle-nous de ton projet d'études au Maroc.",
+      "primaryButton": {
+        "label": "Trouver mon école",
+        "href": "/trouver-mon-ecole"
+      },
+      "secondaryButton": {
+        "label": "Parler à Campus Way"
+      }
+    }
+  }
+}

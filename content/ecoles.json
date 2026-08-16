@@ -1,0 +1,48 @@
+{
+  "establishments": [
+    {
+      "id": "315d9a8c-abe2-45f4-b855-7da6bc647161",
+      "name": "TEST-etablissement",
+      "slug": "test-etablissement",
+      "status": "reference",
+      "city": "Casablanca",
+      "neighborhood": "",
+      "description": "",
+      "logo": "",
+      "coverImage": "",
+      "fields": [],
+      "formations": [],
+      "levels": [],
+      "diplomas": [],
+      "accreditation": "",
+      "admissionConditions": "",
+      "foreignStudentAdmission": "",
+      "intakeDates": "",
+      "tuitionFees": "",
+      "additionalFees": "",
+      "contact": {
+        "phone": "",
+        "email": "",
+        "address": ""
+      },
+      "website": "",
+      "published": true
+    }
+  ],
+  "formations": [
+    {
+      "establishmentId": "315d9a8c-abe2-45f4-b855-7da6bc647161",
+      "name": "TEST — Formation Informatique Campus Way",
+      "slug": "test-formation-informatique-campus-way",
+      "field": "Informatique & ingénierie",
+      "level": "Bac+3",
+      "diploma": "TEST — Licence Informatique",
+      "description": "Formation de test créée depuis l'administration afin de vérifier le fonctionnement du catalogue des formations.",
+      "duration": "3 ans",
+      "admissionConditions": "TEST — Conditions d'admission",
+      "tuitionFees": "TEST — À définir",
+      "published": true,
+      "id": "876ebac7-cc4c-4a55-97ec-2290f744c4fe"
+    }
+  ]
+}

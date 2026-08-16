@@ -1,0 +1,69 @@
+"use server";
+
+import {
+  loadTemoignagesContent,
+  saveTemoignagesContent,
+  appendActivityLog,
+} from "@/lib/content-store";
+import type { TemoignagesContent } from "@/lib/content-store";
+import type { Testimonial } from "@/data/temoignages";
+
+export type SaveResult = { ok: boolean; message?: string };
+
+export async function saveTemoignagesContentAction(
+  content: TemoignagesContent,
+  activityNote?: string,
+): Promise<SaveResult> {
+  try {
+    await saveTemoignagesContent(content);
+    await appendActivityLog(
+      activityNote ?? "Témoignages enregistrés",
+      "Témoignages",
+      "Enregistré",
+    );
+    return { ok: true };
+  } catch {
+    return { ok: false, message: "L'enregistrement a échoué." };
+  }
+}
+
+export async function publishTestimonialAction(
+  item: Testimonial,
+  published: boolean,
+): Promise<SaveResult> {
+  try {
+    const content = await loadTemoignagesContent();
+    content.testimonials = content.testimonials.map((current) =>
+      current.id === item.id ? { ...current, published } : current,
+    );
+    await saveTemoignagesContent(content);
+    await appendActivityLog(
+      published ? "Témoignage publié" : "Témoignage dépublié",
+      `${item.firstName} ${item.lastName}`.trim(),
+      published ? "Publié" : "Brouillon",
+    );
+    return { ok: true };
+  } catch {
+    return { ok: false, message: "L'action a échoué." };
+  }
+}
+
+export async function deleteTestimonialAction(
+  item: Testimonial,
+): Promise<SaveResult> {
+  try {
+    const content = await loadTemoignagesContent();
+    content.testimonials = content.testimonials.filter(
+      (current) => current.id !== item.id,
+    );
+    await saveTemoignagesContent(content);
+    await appendActivityLog(
+      "Témoignage supprimé",
+      `${item.firstName} ${item.lastName}`.trim(),
+      "Supprimé",
+    );
+    return { ok: true };
+  } catch {
+    return { ok: false, message: "La suppression a échoué." };
+  }
+}

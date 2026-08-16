@@ -1,0 +1,188 @@
+{
+  "entries": [
+    {
+      "id": "fe80ec4f-e189-4646-8edf-89b9fd6e6323",
+      "user": "Admin",
+      "action": "FAQ ajoutée",
+      "target": "FAQ",
+      "date": "2026-08-16T11:07:00.194Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "1f4dd974-48f4-43e4-ba65-b5b3b1929d5d",
+      "user": "Admin",
+      "action": "Témoignage ajouté",
+      "target": "Témoignages",
+      "date": "2026-08-16T10:20:40.913Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "d93f2e8d-7880-4826-9b0f-8420bab59e79",
+      "user": "Admin",
+      "action": "Formation publiée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T10:02:25.749Z",
+      "status": "Publié"
+    },
+    {
+      "id": "3a317139-2e49-4520-aa5c-96a6df3b5a6e",
+      "user": "Admin",
+      "action": "Formation dépubliée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T10:02:24.474Z",
+      "status": "Brouillon"
+    },
+    {
+      "id": "31dd6f52-3bf9-4be9-ab74-b6fc5be564ac",
+      "user": "Admin",
+      "action": "Formation publiée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T10:02:23.659Z",
+      "status": "Publié"
+    },
+    {
+      "id": "faeba711-3bb0-4f11-b6e9-3a38a3605b96",
+      "user": "Admin",
+      "action": "Formation modifiée",
+      "target": "Écoles & Formations",
+      "date": "2026-08-16T10:02:21.576Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "3d664ff9-9388-4d06-b0a4-240ffd0c2beb",
+      "user": "Admin",
+      "action": "Formation dépubliée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T10:01:44.658Z",
+      "status": "Brouillon"
+    },
+    {
+      "id": "a3c4d18c-310e-403b-a212-7856b6e71a1a",
+      "user": "Admin",
+      "action": "Formation publiée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T10:01:44.437Z",
+      "status": "Publié"
+    },
+    {
+      "id": "1ce2aa8f-73e6-480b-a051-100dbd4484ac",
+      "user": "Admin",
+      "action": "Formation dépubliée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T10:01:43.511Z",
+      "status": "Brouillon"
+    },
+    {
+      "id": "f408a469-2e51-44eb-a339-47644118b6a0",
+      "user": "Admin",
+      "action": "Formation modifiée",
+      "target": "Écoles & Formations",
+      "date": "2026-08-16T09:53:54.214Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "d464403f-eb16-4c85-b2c0-3fa4965c203f",
+      "user": "Admin",
+      "action": "Établissement ajouté",
+      "target": "Écoles & Formations",
+      "date": "2026-08-16T09:53:48.511Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "fa5a6646-bfc6-4d95-8656-18531faaa487",
+      "user": "Admin",
+      "action": "Formation publiée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T09:15:03.076Z",
+      "status": "Publié"
+    },
+    {
+      "id": "c69c4fcf-27ed-4103-8308-23d5c6fceb29",
+      "user": "Admin",
+      "action": "Formation dépubliée",
+      "target": "TEST — Formation Informatique Campus Way",
+      "date": "2026-08-16T09:15:01.414Z",
+      "status": "Brouillon"
+    },
+    {
+      "id": "2648dff5-ecfc-4164-a981-040c7b2dd24f",
+      "user": "Admin",
+      "action": "Formation ajoutée",
+      "target": "Écoles & Formations",
+      "date": "2026-08-16T09:11:02.558Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "f8fd2ddf-7925-4e22-b6e5-e3a5972af008",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:36.707Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "c1aa102b-d73a-47fe-a81d-19b823370d93",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:36.484Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "4906ad04-e853-4aeb-89c3-6b06f5c89b4d",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:36.283Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "8a6e4499-2105-4c6c-b816-67f7dfb79a8d",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:36.029Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "2ac82585-11f4-4e75-8eee-deee90978539",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:35.756Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "8d5d8de0-f525-40c2-9159-dbdf1be2b4e7",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:32.328Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "2f249e33-fd32-4ca9-aef5-9714cf3fca0b",
+      "user": "Admin",
+      "action": "Contenu « Étudier au Maroc » enregistré",
+      "target": "Étudier au Maroc",
+      "date": "2026-08-15T12:24:29.784Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "298af08c-0155-4a9e-8eba-48ed27ec8d04",
+      "user": "Admin",
+      "action": "Média ajouté",
+      "target": "hero",
+      "date": "2026-08-15T12:17:51.568Z",
+      "status": "Enregistré"
+    },
+    {
+      "id": "d7d522e9-74de-4363-ae2f-72921b4e66ff",
+      "user": "Admin",
+      "action": "Demande CW-0001 reçue",
+      "target": "bachire ndiaye",
+      "date": "2026-08-15T10:47:20.365Z",
+      "status": "Nouvelle"
+    }
+  ]
+}

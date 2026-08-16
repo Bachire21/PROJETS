@@ -1,0 +1,399 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
+import type { MediaItem } from "@/data/media";
+import type { MediaContent } from "@/lib/content-store";
+import {
+  addMediaAction,
+  deleteMediaAction,
+} from "@/app/admin/media/actions";
+import { AdminPageHeader } from "@/components/admin/ui/PageHeader";
+import { AdminSearch } from "@/components/admin/ui/Search";
+import { AdminEmptyState } from "@/components/admin/ui/EmptyState";
+import { ConfirmDialog } from "@/components/admin/ui/ConfirmDialog";
+import { Toast, type ToastData } from "@/components/admin/ui/Toast";
+import {
+  Field,
+  SelectInput,
+  TextInput,
+} from "@/components/admin/ui/fields";
+import { knownImages } from "@/components/admin/ui/fields";
+import {
+  CopyIcon,
+  FileTextIcon,
+  ImageIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@/components/icons";
+
+function formatSize(bytes: number) {
+  if (!bytes) return "Taille inconnue";
+  if (bytes < 1024) return `${bytes} o`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+}
+
+function formatDate(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+const typeLabels: Record<MediaItem["type"], string> = {
+  image: "Image",
+  document: "Document",
+  video: "Vidéo",
+};
+
+const emptyItem = {
+  name: "",
+  type: "image" as MediaItem["type"],
+  size: 0,
+  url: "",
+  usage: [] as string[],
+};
+
+export function MediaManager({
+  initialContent,
+}: {
+  initialContent: MediaContent;
+}) {
+  const [content, setContent] = useState(initialContent);
+  const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("Tous");
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState(emptyItem);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<MediaItem | null>(null);
+  const [toast, setToast] = useState<ToastData>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const items = useMemo(
+    () =>
+      [...content.items].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ),
+    [content.items],
+  );
+
+  const filtered = items.filter((item) => {
+    const matchesQuery =
+      query.trim().length === 0 ||
+      [item.name, item.url].join(" ").toLowerCase().includes(query.toLowerCase());
+    const matchesType =
+      typeFilter === "Tous" || item.type === typeFilter;
+    return matchesQuery && matchesType;
+  });
+
+  const notify = (message: string, kind: "success" | "error" = "success") =>
+    setToast({ kind, message });
+
+  const addItem = async () => {
+    if (!draft.name.trim() || !draft.url.trim()) {
+      notify("Le nom et le chemin du média sont obligatoires.", "error");
+      return;
+    }
+    setSaving(true);
+    const result = await addMediaAction(draft);
+    setSaving(false);
+    if (result.ok) {
+      const media: MediaItem = {
+        ...draft,
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        custom: true,
+      };
+      setContent({ items: [media, ...content.items] });
+      setAdding(false);
+      setDraft(emptyItem);
+      notify("Média ajouté à la médiathèque.");
+    } else {
+      notify(result.message ?? "L'ajout a échoué.", "error");
+    }
+  };
+
+  const copyUrl = async (item: MediaItem) => {
+    try {
+      await navigator.clipboard.writeText(item.url);
+      notify(`Chemin copié : ${item.url}`);
+    } catch {
+      notify("Impossible de copier le chemin.", "error");
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!deleting) return;
+    const result = await deleteMediaAction(deleting);
+    if (result.ok) {
+      setContent({
+        items: content.items.filter((item) => item.id !== deleting.id),
+      });
+      notify("Média supprimé de la médiathèque.");
+    } else {
+      notify(result.message ?? "La suppression a échoué.", "error");
+    }
+    setDeleting(null);
+  };
+
+  const isPublicImage = (item: MediaItem) =>
+    knownImages.includes(item.url) || item.usage.length > 0;
+
+  return (
+    <div className="mx-auto max-w-5xl">
+      <AdminPageHeader
+        title="Médiathèque"
+        description="Les images, documents et vidéos disponibles pour les contenus du site"
+        destination="/"
+        actions={
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-magenta-500 px-6 text-admin-button text-white transition-colors hover:bg-magenta-600"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Ajouter un média
+          </button>
+        }
+      />
+
+      <p className="mt-6 rounded-2xl bg-white px-5 py-4 text-xs leading-relaxed text-navy-600 ring-1 ring-navy-100">
+        Un média utilisé par le site public (badge « utilisé ») ne peut pas être
+        supprimé : cela éviterait de casser les images affichées publiquement.
+      </p>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]">
+        <AdminSearch
+          value={query}
+          onChange={setQuery}
+          placeholder="Rechercher un média..."
+        />
+        <SelectInput
+          value={typeFilter}
+          onChange={setTypeFilter}
+          options={[
+            { value: "Tous", label: "Tous les types" },
+            { value: "image", label: "Images" },
+            { value: "document", label: "Documents" },
+            { value: "video", label: "Vidéos" },
+          ]}
+        />
+      </div>
+
+      <p className="mt-6 text-sm font-semibold text-navy-600" aria-live="polite">
+        {filtered.length} média{filtered.length > 1 ? "s" : ""}
+        {filtered.length !== items.length ? ` sur ${items.length}` : ""}
+      </p>
+
+      {items.length === 0 ? (
+        <div className="mt-6">
+          <AdminEmptyState
+            icon={<ImageIcon className="h-6 w-6" />}
+            title="Aucun média pour le moment."
+            description="Ajoute ici les images, documents et vidéos utilisés par les contenus du site."
+            actionLabel="Ajouter un média"
+            onAction={() => setAdding(true)}
+          />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-6 rounded-3xl border border-dashed border-navy-200 bg-white px-6 py-12 text-center">
+          <p className="text-sm text-navy-600">
+            Aucun média ne correspond à ta recherche.
+          </p>
+        </div>
+      ) : (
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((item) => (
+            <li
+              key={item.id}
+              className="overflow-hidden rounded-3xl bg-white ring-1 ring-navy-100"
+            >
+              <div className="flex h-36 items-center justify-center bg-navy-50">
+                {item.type === "image" && item.url ? (
+                  <div className="relative h-full w-full">
+                    <Image
+                      src={item.url}
+                      alt={item.name}
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-navy-400 ring-1 ring-navy-100">
+                    {item.type === "document" ? (
+                      <FileTextIcon className="h-6 w-6" />
+                    ) : (
+                      <ImageIcon className="h-6 w-6" />
+                    )}
+                  </span>
+                )}
+              </div>
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-navy-900">
+                      {item.name}
+                    </p>
+                    <p className="mt-0.5 truncate font-mono text-xs text-navy-500">
+                      {item.url}
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-navy-50 px-2.5 py-1 text-admin-label uppercase tracking-wide text-navy-600">
+                    {typeLabels[item.type]}
+                  </span>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {isPublicImage(item) ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-whatsapp/10 px-2.5 py-1 text-admin-label uppercase tracking-wide text-whatsapp-dark">
+                      <span className="h-1.5 w-1.5 rounded-full bg-whatsapp" />
+                      Utilisé par le site public
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-navy-50 px-2.5 py-1 text-admin-label uppercase tracking-wide text-navy-600">
+                      Non utilisé
+                    </span>
+                  )}
+                  <span className="text-xs text-navy-500">
+                    {formatSize(item.size)} · {formatDate(item.createdAt)}
+                  </span>
+                </div>
+                <div className="mt-4 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => copyUrl(item)}
+                    className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full bg-navy-900 text-xs font-bold text-white transition-colors hover:bg-magenta-500"
+                  >
+                    <CopyIcon className="h-3.5 w-3.5" />
+                    Copier le chemin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleting(item)}
+                    disabled={isPublicImage(item)}
+                    aria-label="Supprimer ce média"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-navy-200 text-navy-600 transition-colors hover:border-red-500 hover:text-red-600 disabled:pointer-events-none disabled:opacity-30"
+                  >
+                    <TrashIcon className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {adding ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-5 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ajouter un média"
+          onClick={() => setAdding(false)}
+        >
+          <div
+            className="w-full max-w-lg rounded-3xl bg-white p-7 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 className="text-admin-section text-navy-900">
+              Ajouter un média
+            </h2>
+            <p className="mt-2 text-xs leading-relaxed text-navy-600">
+              Enregistre le chemin d&apos;un fichier déjà présent dans le
+              dossier public du site (ou d&apos;une URL externe). Aucun
+              téléversement de fichier n&apos;est encore disponible.
+            </p>
+            <div className="mt-6 space-y-5">
+              <Field label="Nom">
+                <TextInput
+                  value={draft.name}
+                  onChange={(value) => setDraft({ ...draft, name: value })}
+                  placeholder="Ex. Photo campus"
+                />
+              </Field>
+              <Field label="Type">
+                <SelectInput
+                  value={draft.type}
+                  onChange={(value) =>
+                    setDraft({ ...draft, type: value as MediaItem["type"] })
+                  }
+                  options={[
+                    { value: "image", label: "Image" },
+                    { value: "document", label: "Document" },
+                    { value: "video", label: "Vidéo" },
+                  ]}
+                />
+              </Field>
+              <Field
+                label="URL / Chemin"
+                hint="Ex. /images/etudier-hero.jpg"
+              >
+                <TextInput
+                  value={draft.url}
+                  onChange={(value) => setDraft({ ...draft, url: value })}
+                  placeholder="/images/..."
+                />
+              </Field>
+              <Field
+                label="Taille (octets, facultatif)"
+                hint="Laisse vide si la taille est inconnue."
+              >
+                <TextInput
+                  value={draft.size ? String(draft.size) : ""}
+                  onChange={(value) =>
+                    setDraft({
+                      ...draft,
+                      size: parseInt(value.replace(/\D/g, ""), 10) || 0,
+                    })
+                  }
+                  placeholder="Ex. 245760"
+                />
+              </Field>
+            </div>
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setAdding(false)}
+                className="inline-flex h-10 items-center justify-center rounded-full border border-navy-200 px-6 text-admin-button text-navy-900 transition-colors hover:border-navy-900"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={addItem}
+                disabled={saving}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-magenta-500 px-6 text-admin-button text-white transition-colors hover:bg-magenta-600 disabled:opacity-60"
+              >
+                <PlusIcon className="h-4 w-4" />
+                {saving ? "Ajout…" : "Ajouter"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <ConfirmDialog
+        open={deleting !== null}
+        title="Supprimer ce média ?"
+        description="Le média sera retiré de la médiathèque. Le fichier lui-même ne sera pas modifié sur le serveur."
+        confirmLabel="Supprimer"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleting(null)}
+      />
+
+      <Toast toast={toast} />
+    </div>
+  );
+}

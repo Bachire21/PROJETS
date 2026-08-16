@@ -1,0 +1,38 @@
+{
+  "faqItems": [
+    {
+      "question": "omment Campus Way peut-il m'aider à étudier au Maroc ?",
+      "answer": "Campus Way t'accompagne dans ton projet d'études au Maroc en t'aidant à comprendre les formations et les établissements, à préparer ton projet et à organiser les différentes étapes de ton parcours.\n",
+      "category": "",
+      "order": 1,
+      "published": true,
+      "id": "d0f1d860-8842-40a4-b3e4-c90196688b2f"
+    }
+  ],
+  "page": {
+    "hero": {
+      "eyebrow": "FAQ",
+      "title": "Les réponses aux questions que tu te poses.",
+      "description": "Retrouve ici les réponses aux questions les plus fréquentes concernant ton projet d'études et ton installation au Maroc."
+    },
+    "emptyState": {
+      "title": "Questions & réponses",
+      "description": "Les réponses aux questions fréquentes seront bientôt disponibles. En attendant, notre équipe peut répondre directement à ton projet."
+    },
+    "noResults": {
+      "message": "Aucune réponse ne correspond à ta recherche."
+    },
+    "cta": {
+      "eyebrow": "Une question ?",
+      "title": "Tu ne trouves pas ta réponse ?",
+      "description": "Notre équipe peut t'aider directement à comprendre les prochaines étapes de ton projet.",
+      "primaryButton": {
+        "label": "Trouver mon école",
+        "href": "/trouver-mon-ecole"
+      },
+      "secondaryButton": {
+        "label": "Parler à Campus Way"
+      }
+    }
+  }
+}
