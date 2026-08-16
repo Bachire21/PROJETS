@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Campus Way
 
-## Getting Started
+Site public + espace d'administration (CMS) de Campus Way — orientation et accompagnement des étudiants africains francophones vers les études au Maroc.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4
+- Authentification Admin par cookie signé (HMAC), accès protégé par `src/proxy.ts`
+- Stockage via une couche unique `src/lib/storage/` :
+  - `STORAGE_PROVIDER=file` : fichiers locaux (`content/*.json`, `public/uploads/`) — développement / VPS
+  - `STORAGE_PROVIDER=supabase` : table `documents` (Postgres) + bucket `uploads` — production Vercel
+
+## Démarrage
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Variables requises (voir `.env.example`) : `CW_ADMIN_SESSION_SECRET`, `CW_ADMIN_EMAIL`, `CW_ADMIN_CODE_SALT`, `CW_ADMIN_CODE_HASH`, `STORAGE_PROVIDER`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_BUCKET`, `NEXT_PUBLIC_SITE_URL`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Créer le projet Supabase et exécuter `supabase/schema.sql` (table `documents`).
+2. Renseigner les variables d'environnement dans Vercel (`STORAGE_PROVIDER=supabase`).
+3. Déployer, puis migrer les données locales : `node scripts/migrate-to-supabase.mjs`.
+4. Pointage du domaine : `NEXT_PUBLIC_SITE_URL` (ex. `https://campusway.ma`).
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # développement
+npm run lint     # ESLint
+npm run build    # build de production
+npm run start    # serveur de production
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Données
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Les contenus administrables (établissements, formations, FAQ, témoignages, logement, services, étudier au Maroc, médiathèque, demandes d'orientation, journal d'activité) sont lus à chaque requête : une publication depuis l'Admin est visible immédiatement sur le site public.
