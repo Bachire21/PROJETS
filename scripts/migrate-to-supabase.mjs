@@ -15,10 +15,10 @@ import { fileURLToPath } from "url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-function loadEnv() {
+async function loadEnv() {
   const envPath = path.join(root, ".env.local");
   try {
-    const raw = fs.readFile(envPath, "utf8");
+    const raw = await fs.readFile(envPath, "utf8");
     for (const line of raw.split(/\r?\n/)) {
       const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
       if (match && !(match[1] in process.env)) {
@@ -30,7 +30,7 @@ function loadEnv() {
   }
 }
 
-loadEnv();
+await loadEnv();
 
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
