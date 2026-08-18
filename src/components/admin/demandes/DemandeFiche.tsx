@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type {
   OrientationRequest,
   OrientationRequestStatus,
@@ -11,6 +12,7 @@ import { orientationRequestStatuses } from "@/data/demandes";
 import {
   addRequestNoteAction,
   archiveRequestAction,
+  deleteRequestAction,
   updateRequestStatusAction,
 } from "@/app/admin/demandes/actions";
 import { actionErrorMessage } from "@/lib/client-action-error";
@@ -27,6 +29,7 @@ import {
   ClockIcon,
   MailIcon,
   PlusIcon,
+  TrashIcon,
   UserIcon,
   WhatsAppIcon,
 } from "@/components/icons";
@@ -67,11 +70,13 @@ export function DemandeFiche({
 }: {
   initialRequest: OrientationRequest;
 }) {
+  const router = useRouter();
   const [request, setRequest] = useState(initialRequest);
   const [note, setNote] = useState("");
   const [addingNote, setAddingNote] = useState(false);
   const [savingStatus, setSavingStatus] = useState(false);
   const [archiving, setArchiving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState<ToastData>(null);
 
   useEffect(() => {
@@ -167,6 +172,30 @@ export function DemandeFiche({
     }
   };
 
+  const confirmDelete = async () => {
+    setDeleting(true);
+    try {
+      const result = await deleteRequestAction(request.id);
+      if (result.ok) {
+        notify("Demande supprimée.");
+        router.replace("/admin/demandes");
+      } else {
+        setDeleting(false);
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      setDeleting(false);
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        actionErrorMessage(
+          error,
+          "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
+        "error",
+      );
+    }
+  };
+
   return (
     <div className="mx-auto max-w-5xl">
       <Link
@@ -192,6 +221,14 @@ export function DemandeFiche({
         >
           <ArchiveIcon className="h-4 w-4" />
           Archiver
+        </button>
+        <button
+          type="button"
+          onClick={() => setDeleting(true)}
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-red-300 bg-white px-5 text-admin-button text-red-600 transition-colors hover:bg-red-600 hover:text-white"
+        >
+          <TrashIcon className="h-4 w-4" />
+          Supprimer
         </button>
       </div>
 
@@ -374,6 +411,15 @@ export function DemandeFiche({
         danger={false}
         onConfirm={confirmArchive}
         onCancel={() => setArchiving(false)}
+      />
+
+      <ConfirmDialog
+        open={deleting}
+        title="Supprimer cette demande ?"
+        description="La demande sera définitivement supprimée. Cette action est irréversible."
+        confirmLabel="Supprimer"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleting(false)}
       />
 
       <Toast toast={toast} />

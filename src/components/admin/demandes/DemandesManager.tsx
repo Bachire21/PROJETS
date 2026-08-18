@@ -92,10 +92,12 @@ export function DemandesManager({
 
   const items = useMemo(
     () =>
-      [...initialContent.requests].sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      ),
+      [...initialContent.requests]
+        .filter((request) => !request.deletedAt)
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        ),
     [initialContent.requests],
   );
 

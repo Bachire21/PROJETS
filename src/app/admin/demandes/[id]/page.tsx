@@ -12,7 +12,9 @@ export default async function AdminDemandeFichePage({
   const { id } = await params;
   console.log(`[DEBUG] render page: /admin/demandes/${id}`);
   const content = await loadDemandesContent();
-  const request = content.requests.find((item) => item.id === id);
+  const request = content.requests.find(
+    (item) => item.id === id && !item.deletedAt,
+  );
   if (!request) {
     notFound();
   }

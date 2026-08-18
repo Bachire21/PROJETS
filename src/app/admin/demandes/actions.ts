@@ -99,3 +99,90 @@ export async function addRequestNoteAction(
 export async function archiveRequestAction(id: string): Promise<SaveResult> {
   return updateRequestStatusAction(id, "archivee");
 }
+
+export async function deleteRequestAction(id: string): Promise<SaveResult> {
+  await requireAdminSession();
+  try {
+    const content = await loadDemandesContent();
+    const request = content.requests.find((current) => current.id === id);
+    if (!request) {
+      return { ok: false, message: "Demande introuvable." };
+    }
+    content.requests = content.requests.map((current) =>
+      current.id === id
+        ? { ...current, deletedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+        : current,
+    );
+    await saveDemandesContent(content);
+    await appendActivityLog(
+      `Demande ${request.number} déplacée vers la corbeille`,
+      `${request.firstName} ${request.lastName}`.trim(),
+      "Supprimé",
+    );
+    console.log("[DEBUG] action deleteRequestAction OK (corbeille)");
+    return { ok: true };
+  } catch (error) {
+    logStorageError("deleteRequestAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La suppression a échoué."),
+    };
+  }
+}
+
+export async function restoreRequestAction(id: string): Promise<SaveResult> {
+  await requireAdminSession();
+  try {
+    const content = await loadDemandesContent();
+    const request = content.requests.find((current) => current.id === id);
+    if (!request) {
+      return { ok: false, message: "Demande introuvable." };
+    }
+    content.requests = content.requests.map((current) => {
+      if (current.id !== id) return current;
+      const restored = { ...current };
+      delete restored.deletedAt;
+      return { ...restored, updatedAt: new Date().toISOString() };
+    });
+    await saveDemandesContent(content);
+    await appendActivityLog(
+      `Demande ${request.number} restaurée depuis la corbeille`,
+      `${request.firstName} ${request.lastName}`.trim(),
+      "Restauré",
+    );
+    console.log("[DEBUG] action restoreRequestAction OK");
+    return { ok: true };
+  } catch (error) {
+    logStorageError("restoreRequestAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La restauration a échoué."),
+    };
+  }
+}
+
+export async function purgeRequestAction(id: string): Promise<SaveResult> {
+  await requireAdminSession();
+  try {
+    const content = await loadDemandesContent();
+    const request = content.requests.find((current) => current.id === id);
+    if (!request) {
+      return { ok: false, message: "Demande introuvable." };
+    }
+    content.requests = content.requests.filter((current) => current.id !== id);
+    await saveDemandesContent(content);
+    await appendActivityLog(
+      `Demande ${request.number} supprimée définitivement`,
+      `${request.firstName} ${request.lastName}`.trim(),
+      "Supprimé",
+    );
+    console.log("[DEBUG] action purgeRequestAction OK");
+    return { ok: true };
+  } catch (error) {
+    logStorageError("purgeRequestAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La suppression définitive a échoué."),
+    };
+  }
+}

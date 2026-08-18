@@ -50,6 +50,7 @@ export type OrientationRequest = {
   notes: { id: string; text: string; createdAt: string }[];
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 };
 
 export const seedOrientationRequests: OrientationRequest[] = [];

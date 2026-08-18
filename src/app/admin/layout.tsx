@@ -21,6 +21,7 @@ import {
   QuoteIcon,
   SettingsIcon,
   CloseIcon,
+  ArchiveIcon,
 } from "@/components/icons";
 
 const navGroups = [
@@ -57,6 +58,7 @@ const navGroups = [
         href: "/admin/demandes",
         icon: MapPinIcon,
       },
+      { label: "Corbeille", href: "/admin/demandes/corbeille", icon: ArchiveIcon },
     ],
   },
   {
