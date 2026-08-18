@@ -43,6 +43,7 @@ function formatDate(iso: string) {
 }
 
 export default async function AdminDashboardPage() {
+  console.log("[DEBUG] render page: /admin/dashboard");
   const [demandes, faq, temoignages, ecoles, logement, etudes, services, activity] =
     await Promise.all([
       loadDemandesContent(),

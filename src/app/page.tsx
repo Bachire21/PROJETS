@@ -8,6 +8,7 @@ import { FinalCta } from "@/components/home/FinalCta";
 import { FloatingCta } from "@/components/home/FloatingCta";
 
 export default function Home() {
+  console.log("[DEBUG] render page: /");
   return (
     <>
       <Hero />

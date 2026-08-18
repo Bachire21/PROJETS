@@ -11,7 +11,9 @@ export async function loginAction(
   const email = String(formData.get("email") ?? "").trim();
   const code = String(formData.get("code") ?? "");
 
+  console.log("[DEBUG] action loginAction attempt");
   if (!verifyCredentials(email, code)) {
+    console.log("[DEBUG] action loginAction FAILED: identifiants incorrects");
     return { error: "Identifiants incorrects. Vérifiez l'email et le code d'accès." };
   }
 
@@ -23,6 +25,8 @@ export async function loginAction(
     path: "/",
     maxAge: 12 * 60 * 60,
   });
+
+  console.log("[DEBUG] action loginAction OK (session créée)");
 
   const next = String(formData.get("next") ?? "");
   if (next.startsWith("/admin") && next !== "/admin/login") {

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  console.log("[DEBUG] render page: /contact");
   return (
     <>
       <Hero />

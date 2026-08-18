@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function FaqPage() {
+  console.log("[DEBUG] render page: /faq");
   const source = await getFaqPageData();
 
   if (source.status === "error") {

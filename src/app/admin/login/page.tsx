@@ -12,6 +12,7 @@ export default async function AdminLoginPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const { next } = await searchParams;
+  console.log("[DEBUG] render page: /admin/login");
   return (
     <div className="flex min-h-screen items-center justify-center bg-navy-950 px-4 py-10">
       <div className="w-full max-w-md">

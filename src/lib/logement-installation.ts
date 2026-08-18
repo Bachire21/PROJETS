@@ -11,10 +11,13 @@ export type LogementPageSource =
 // à la base de données (ADMIN → Logement & Installation).
 
 export async function getLogementPageData(): Promise<LogementPageSource> {
+  const start = Date.now();
   try {
     const data = await loadLogementContent();
+    console.log(`[DEBUG] getLogementPageData OK in ${Date.now() - start}ms`);
     return { status: "success", data };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] getLogementPageData ERROR: ${(error as Error).message}`);
     return { status: "error" };
   }
 }

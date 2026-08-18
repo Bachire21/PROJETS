@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function LogementInstallationPage() {
+  console.log("[DEBUG] render page: /logement-installation");
   const source = await getLogementPageData();
 
   if (source.status === "error") {

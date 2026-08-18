@@ -10,6 +10,7 @@ export default async function AdminDemandeFichePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  console.log(`[DEBUG] render page: /admin/demandes/${id}`);
   const content = await loadDemandesContent();
   const request = content.requests.find((item) => item.id === id);
   if (!request) {

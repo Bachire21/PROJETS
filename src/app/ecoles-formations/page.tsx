@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function EcolesFormationsPage() {
+  console.log("[DEBUG] render page: /ecoles-formations");
   const content = await loadEcolesContent();
   const establishments = content.establishments.filter((establishment) =>
     isPublished(establishment.published),

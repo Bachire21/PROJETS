@@ -19,8 +19,10 @@ export async function saveEtudesContentAction(
       "Étudier au Maroc",
       "Enregistré",
     );
+    console.log("[DEBUG] action saveEtudesContentAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action saveEtudesContentAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'enregistrement a échoué." };
   }
 }

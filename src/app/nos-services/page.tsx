@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function NosServicesPage() {
+  console.log("[DEBUG] render page: /nos-services");
   const content = await loadServicesContent();
 
   return (

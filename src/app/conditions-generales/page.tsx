@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 };
 
 export default function ConditionsGeneralesPage() {
+  console.log("[DEBUG] render page: /conditions-generales");
   return (
     <Container className="py-20 sm:py-28">
       <h1 className="text-3xl font-bold text-navy-900 sm:text-4xl">

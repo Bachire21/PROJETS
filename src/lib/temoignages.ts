@@ -17,11 +17,14 @@ export type TemoignagesPage = Awaited<
 // La page publique n'affiche que les témoignages publiés.
 
 export async function getTemoignagesPageData(): Promise<TemoignagesPageSource> {
+  const start = Date.now();
   try {
     const content = await loadTemoignagesContent();
     const testimonials = content.testimonials.filter((item) => item.published);
+    console.log(`[DEBUG] getTemoignagesPageData OK (${testimonials.length} published) in ${Date.now() - start}ms`);
     return { status: "success", testimonials, page: content.page };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] getTemoignagesPageData ERROR: ${(error as Error).message}`);
     return { status: "error" };
   }
 }

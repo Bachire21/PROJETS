@@ -16,21 +16,37 @@ export function getStorage(): StorageProvider {
   if (provider) return provider;
   const mode = process.env.STORAGE_PROVIDER ?? "file";
   provider = mode === "supabase" ? supabaseProvider : fileProvider;
+  console.log("[DEBUG] storage provider =", mode);
   return provider;
 }
 
 export async function readStoredJson<T>(key: string, fallback: () => T): Promise<T> {
+  const start = Date.now();
   const raw = await getStorage().readDocument(key);
-  if (raw === null) return JSON.parse(JSON.stringify(fallback())) as T;
+  if (raw === null) {
+    console.log(`[DEBUG] readStoredJson "${key}" -> null (fallback) in ${Date.now() - start}ms`);
+    return JSON.parse(JSON.stringify(fallback())) as T;
+  }
   try {
-    return JSON.parse(raw) as T;
-  } catch {
+    const parsed = JSON.parse(raw) as T;
+    console.log(`[DEBUG] readStoredJson "${key}" -> ${raw.length} bytes in ${Date.now() - start}ms`);
+    return parsed;
+  } catch (error) {
+    console.log(`[DEBUG] readStoredJson "${key}" -> parse error, fallback. ${(error as Error).message}`);
     return JSON.parse(JSON.stringify(fallback())) as T;
   }
 }
 
 export async function writeStoredJson<T>(key: string, content: T): Promise<void> {
-  await getStorage().writeDocument(key, JSON.stringify(content, null, 2));
+  const start = Date.now();
+  const json = JSON.stringify(content, null, 2);
+  try {
+    await getStorage().writeDocument(key, json);
+    console.log(`[DEBUG] writeStoredJson "${key}" -> ${json.length} bytes in ${Date.now() - start}ms`);
+  } catch (error) {
+    console.log(`[DEBUG] writeStoredJson "${key}" FAILED: ${(error as Error).message}`);
+    throw error;
+  }
 }
 
 export { isSupabaseUrl } from "./supabase-provider";

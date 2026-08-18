@@ -4,6 +4,7 @@ import { TemoignagesManager } from "@/components/admin/temoignages/TemoignagesMa
 export const dynamic = "force-dynamic";
 
 export default async function AdminTemoignagesPage() {
+  console.log("[DEBUG] render page: /admin/temoignages");
   const content = await loadTemoignagesContent();
   return <TemoignagesManager initialContent={content} />;
 }

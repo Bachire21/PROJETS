@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function TrouverMonEcolePage() {
+  console.log("[DEBUG] render page: /trouver-mon-ecole");
   return (
     <>
       <section className="relative overflow-hidden bg-white">

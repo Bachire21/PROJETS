@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function AProposPage() {
+  console.log("[DEBUG] render page: /a-propos");
   return (
     <>
       <Hero />

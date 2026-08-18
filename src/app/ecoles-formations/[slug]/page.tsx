@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EstablishmentPage({ params }: Props) {
   const { slug } = await params;
+  console.log(`[DEBUG] render page: /ecoles-formations/${slug}`);
   const content = await loadEcolesContent();
   const establishment = content.establishments.find(
     (item) => item.slug === slug && isPublished(item.published),

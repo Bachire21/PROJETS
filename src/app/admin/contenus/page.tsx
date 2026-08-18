@@ -47,6 +47,7 @@ type ContentRow = {
 };
 
 export default async function AdminContenusPage() {
+  console.log("[DEBUG] render page: /admin/contenus");
   const [
     etudes,
     services,

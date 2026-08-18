@@ -21,8 +21,10 @@ export async function saveEcolesContentAction(
       "Écoles & Formations",
       "Enregistré",
     );
+    console.log("[DEBUG] action saveEcolesContentAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action saveEcolesContentAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'enregistrement a échoué." };
   }
 }
@@ -42,8 +44,10 @@ export async function publishEstablishmentAction(
       item.name,
       published ? "Publié" : "Brouillon",
     );
+    console.log(`[DEBUG] action publishEstablishmentAction OK (published=${published})`);
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action publishEstablishmentAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'action a échoué." };
   }
 }
@@ -58,8 +62,10 @@ export async function deleteEstablishmentAction(
     );
     await saveEcolesContent(content);
     await appendActivityLog("Établissement supprimé", item.name, "Supprimé");
+    console.log("[DEBUG] action deleteEstablishmentAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action deleteEstablishmentAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "La suppression a échoué." };
   }
 }
@@ -79,8 +85,10 @@ export async function publishFormationAction(
       item.name,
       published ? "Publié" : "Brouillon",
     );
+    console.log(`[DEBUG] action publishFormationAction OK (published=${published})`);
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action publishFormationAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'action a échoué." };
   }
 }
@@ -95,8 +103,10 @@ export async function deleteFormationAction(
     );
     await saveEcolesContent(content);
     await appendActivityLog("Formation supprimée", item.name, "Supprimé");
+    console.log("[DEBUG] action deleteFormationAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action deleteFormationAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "La suppression a échoué." };
   }
 }

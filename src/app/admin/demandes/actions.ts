@@ -34,8 +34,10 @@ export async function updateRequestStatusAction(
       `${request.firstName} ${request.lastName}`.trim(),
       "Traité",
     );
+    console.log(`[DEBUG] action updateRequestStatusAction OK (status=${status})`);
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action updateRequestStatusAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "La mise à jour a échoué." };
   }
 }
@@ -76,8 +78,10 @@ export async function addRequestNoteAction(
       `${request.firstName} ${request.lastName}`.trim(),
       "Enregistré",
     );
+    console.log("[DEBUG] action addRequestNoteAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action addRequestNoteAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'ajout de la note a échoué." };
   }
 }

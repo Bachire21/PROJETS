@@ -18,8 +18,10 @@ export async function saveSettingsContentAction(
       "Paramètres",
       "Enregistré",
     );
+    console.log("[DEBUG] action saveSettingsContentAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action saveSettingsContentAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'enregistrement a échoué." };
   }
 }

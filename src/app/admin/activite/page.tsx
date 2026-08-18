@@ -28,6 +28,7 @@ function statusTone(status: string) {
 }
 
 export default async function AdminActivitePage() {
+  console.log("[DEBUG] render page: /admin/activite");
   const content = await loadActivityContent();
   const entries = [...content.entries].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),

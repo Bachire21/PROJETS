@@ -21,8 +21,10 @@ export async function saveTemoignagesContentAction(
       "Témoignages",
       "Enregistré",
     );
+    console.log("[DEBUG] action saveTemoignagesContentAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action saveTemoignagesContentAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'enregistrement a échoué." };
   }
 }
@@ -42,8 +44,10 @@ export async function publishTestimonialAction(
       `${item.firstName} ${item.lastName}`.trim(),
       published ? "Publié" : "Brouillon",
     );
+    console.log(`[DEBUG] action publishTestimonialAction OK (published=${published})`);
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action publishTestimonialAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'action a échoué." };
   }
 }
@@ -62,8 +66,10 @@ export async function deleteTestimonialAction(
       `${item.firstName} ${item.lastName}`.trim(),
       "Supprimé",
     );
+    console.log("[DEBUG] action deleteTestimonialAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action deleteTestimonialAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "La suppression a échoué." };
   }
 }

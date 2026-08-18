@@ -52,8 +52,10 @@ export async function submitOrientationRequest(
       `${data.firstName} ${data.lastName}`.trim(),
       "Nouvelle",
     );
+    console.log(`[DEBUG] action submitOrientationRequest OK (${number})`);
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action submitOrientationRequest FAILED: ${(error as Error).message}`);
     return {
       ok: false,
       message:

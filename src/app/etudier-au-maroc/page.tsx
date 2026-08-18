@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function EtudierAuMarocPage() {
+  console.log("[DEBUG] render page: /etudier-au-maroc");
   const content = await loadEtudesContent();
 
   return (

@@ -46,11 +46,16 @@ import {
 const documentKey = DOCUMENT_KEYS;
 
 async function readJsonFile<T>(key: string, fallback: () => T): Promise<T> {
-  return readStoredJson(key, fallback);
+  const start = Date.now();
+  const result = await readStoredJson(key, fallback);
+  console.log(`[DEBUG] content-store read "${key}" total ${Date.now() - start}ms`);
+  return result;
 }
 
 async function writeJsonFile<T>(key: string, content: T): Promise<void> {
+  const start = Date.now();
   await writeStoredJson(key, content);
+  console.log(`[DEBUG] content-store write "${key}" total ${Date.now() - start}ms`);
 }
 
 // ---------------------------------------------------------------
@@ -245,7 +250,8 @@ export async function appendActivityLog(
     };
     content.entries = [entry, ...content.entries].slice(0, activityLimit);
     await writeJsonFile(documentKey.activity, content);
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] appendActivityLog FAILED: ${(error as Error).message}`);
     // Le journal ne doit jamais bloquer une action d'administration.
   }
 }

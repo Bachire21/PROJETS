@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function TemoignagesPage() {
+  console.log("[DEBUG] render page: /temoignages");
   const source = await getTemoignagesPageData();
 
   if (source.status === "error") {

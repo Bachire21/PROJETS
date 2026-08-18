@@ -69,8 +69,10 @@ export async function uploadMediaAction(
     content.items = [media, ...content.items];
     await saveMediaContent(content);
     await appendActivityLog("Média ajouté", media.name, "Enregistré");
+    console.log(`[DEBUG] action uploadMediaAction OK (${uploaded.size} bytes)`);
     return { ok: true, media };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action uploadMediaAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'import de l'image a échoué." };
   }
 }
@@ -89,8 +91,10 @@ export async function addMediaAction(
     content.items = [media, ...content.items];
     await saveMediaContent(content);
     await appendActivityLog("Média ajouté", item.name, "Enregistré");
+    console.log("[DEBUG] action addMediaAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action addMediaAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "L'ajout du média a échoué." };
   }
 }
@@ -114,8 +118,10 @@ export async function deleteMediaAction(item: MediaItem): Promise<SaveResult> {
       await getStorage().deleteObject(item.url).catch(() => {});
     }
     await appendActivityLog("Média supprimé", item.name, "Supprimé");
+    console.log("[DEBUG] action deleteMediaAction OK");
     return { ok: true };
-  } catch {
+  } catch (error) {
+    console.log(`[DEBUG] action deleteMediaAction FAILED: ${(error as Error).message}`);
     return { ok: false, message: "La suppression a échoué." };
   }
 }
