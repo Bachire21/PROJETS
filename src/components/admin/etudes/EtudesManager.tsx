@@ -10,6 +10,7 @@ import type {
 import type { MediaItem } from "@/data/media";
 import { sortByOrder } from "@/lib/logement-content-utils";
 import { saveEtudesContentAction } from "@/app/admin/etudes/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import { SectionCard } from "@/components/admin/logement/SectionCard";
 import { SimpleItemsEditor } from "@/components/admin/etudes/SimpleItemsEditor";
 import { PreviewModal } from "@/components/admin/etudes/PreviewModal";
@@ -112,8 +113,10 @@ export function EtudesManager({
       console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message:
+        message: actionErrorMessage(
+          error,
           "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
       });
     } finally {
       setSaving(false);

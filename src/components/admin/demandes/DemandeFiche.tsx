@@ -13,6 +13,7 @@ import {
   archiveRequestAction,
   updateRequestStatusAction,
 } from "@/app/admin/demandes/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import { ConfirmDialog } from "@/components/admin/ui/ConfirmDialog";
 import { Toast, type ToastData } from "@/components/admin/ui/Toast";
 import { SelectInput, TextArea } from "@/components/admin/ui/fields";
@@ -93,7 +94,10 @@ export function DemandeFiche({
     } catch (error) {
       console.error("changeStatus : la Server Action a rejeté la requête.", error);
       notify(
-        "La mise à jour n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "La mise à jour n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     } finally {
@@ -126,7 +130,10 @@ export function DemandeFiche({
     } catch (error) {
       console.error("addNote : la Server Action a rejeté la requête.", error);
       notify(
-        "L'ajout de la note n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "L'ajout de la note n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     } finally {
@@ -147,7 +154,10 @@ export function DemandeFiche({
     } catch (error) {
       console.error("confirmArchive : la Server Action a rejeté la requête.", error);
       notify(
-        "L'archivage n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "L'archivage n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     } finally {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { SiteSettings } from "@/data/settings";
 import { saveSettingsContentAction } from "@/app/admin/parametres/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import { AdminPageHeader } from "@/components/admin/ui/PageHeader";
 import { ConfirmDialog } from "@/components/admin/ui/ConfirmDialog";
 import { Toast, type ToastData } from "@/components/admin/ui/Toast";
@@ -59,8 +60,10 @@ export function ParametresManager({
       console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message:
+        message: actionErrorMessage(
+          error,
           "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
       });
     } finally {
       setSaving(false);

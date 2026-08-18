@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
 import type { MediaItem } from "@/data/media";
 import { uploadMediaAction } from "@/app/admin/media/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import {
   CheckIcon,
   CloseIcon,
@@ -77,7 +78,10 @@ export function MediaPickerField({
     } catch (error) {
       console.error("upload : la Server Action a rejeté la requête.", error);
       setError(
-        "L'import n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "L'import n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
       );
     } finally {
       setUploading(false);

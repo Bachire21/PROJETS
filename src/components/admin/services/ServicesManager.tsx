@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Service, ServicesPageData } from "@/data/services";
 import { sortByOrder } from "@/lib/logement-content-utils";
 import { saveServicesContentAction } from "@/app/admin/services/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import { SectionCard } from "@/components/admin/logement/SectionCard";
 import { SimpleItemsEditor } from "@/components/admin/etudes/SimpleItemsEditor";
 import { ServicesListEditor } from "@/components/admin/services/ServicesListEditor";
@@ -101,8 +102,10 @@ export function ServicesManager({
       console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message:
+        message: actionErrorMessage(
+          error,
           "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
       });
     } finally {
       setSaving(false);

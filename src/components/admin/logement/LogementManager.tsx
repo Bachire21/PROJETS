@@ -9,6 +9,7 @@ import type {
 } from "@/data/logement-installation";
 import { sortByOrder } from "@/lib/logement-content-utils";
 import { saveLogementContentAction } from "@/app/admin/logement/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import { SectionCard } from "@/components/admin/logement/SectionCard";
 import { PublicDestination } from "@/components/admin/ui/PublicDestination";
 import {
@@ -262,8 +263,10 @@ return key === "steps"
       console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message:
+        message: actionErrorMessage(
+          error,
           "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
       });
     } finally {
       setSaving(false);

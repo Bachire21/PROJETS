@@ -14,6 +14,7 @@ import {
   publishFormationAction,
   saveEcolesContentAction,
 } from "@/app/admin/ecoles/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
 import { AdminPageHeader } from "@/components/admin/ui/PageHeader";
 import { AdminSearch } from "@/components/admin/ui/Search";
 import { AdminEmptyState } from "@/components/admin/ui/EmptyState";
@@ -226,7 +227,10 @@ export function FormationsManager({
     } catch (error) {
       console.error("createEstablishment : la Server Action a rejeté la requête.", error);
       notify(
-        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     } finally {
@@ -272,7 +276,10 @@ export function FormationsManager({
     } catch (error) {
       console.error("saveItem : la Server Action a rejeté la requête.", error);
       notify(
-        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     } finally {
@@ -306,7 +313,10 @@ export function FormationsManager({
     } catch (error) {
       console.error("togglePublished : la Server Action a rejeté la requête.", error);
       notify(
-        "L'action n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "L'action n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     }
@@ -328,7 +338,10 @@ export function FormationsManager({
     } catch (error) {
       console.error("confirmDelete : la Server Action a rejeté la requête.", error);
       notify(
-        "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        actionErrorMessage(
+          error,
+          "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
         "error",
       );
     } finally {
