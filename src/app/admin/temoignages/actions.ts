@@ -7,6 +7,7 @@ import {
 } from "@/lib/content-store";
 import type { TemoignagesContent } from "@/lib/content-store";
 import type { Testimonial } from "@/data/temoignages";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -24,8 +25,11 @@ export async function saveTemoignagesContentAction(
     console.log("[DEBUG] action saveTemoignagesContentAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action saveTemoignagesContentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'enregistrement a échoué." };
+    logStorageError("saveTemoignagesContentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'enregistrement a échoué."),
+    };
   }
 }
 
@@ -47,8 +51,11 @@ export async function publishTestimonialAction(
     console.log(`[DEBUG] action publishTestimonialAction OK (published=${published})`);
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action publishTestimonialAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'action a échoué." };
+    logStorageError("publishTestimonialAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'action a échoué."),
+    };
   }
 }
 
@@ -69,7 +76,10 @@ export async function deleteTestimonialAction(
     console.log("[DEBUG] action deleteTestimonialAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action deleteTestimonialAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "La suppression a échoué." };
+    logStorageError("deleteTestimonialAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La suppression a échoué."),
+    };
   }
 }

@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { StorageProvider, UploadedObject } from "./types";
+import { logStorageError } from "./errors";
 
 // Provider persistant pour Vercel : les documents de contenu vivent dans
 // la table `documents` (Postgres), les images dans le bucket de stockage
@@ -42,7 +43,10 @@ export const supabaseProvider: StorageProvider = {
       .eq("key", key)
       .maybeSingle();
     if (error) {
-      console.log(`[DEBUG] supabase readDocument "${key}" ERROR: ${error.message}`);
+      // Erreur réelle (table absente, RLS, réponse inattendue…) :
+      // journalisée en détail, puis retour null pour laisser le fallback
+      // de contenu s'appliquer — jamais silencieusement.
+      logStorageError(`supabase readDocument "${key}"`, error);
       return null;
     }
     if (!data) {
@@ -62,7 +66,7 @@ export const supabaseProvider: StorageProvider = {
         { onConflict: "key" },
       );
     if (error) {
-      console.log(`[DEBUG] supabase writeDocument "${key}" ERROR: ${error.message}`);
+      logStorageError(`supabase writeDocument "${key}"`, error);
       throw error;
     }
     console.log(`[DEBUG] supabase writeDocument "${key}" upsert OK in ${Date.now() - start}ms`);
@@ -81,7 +85,7 @@ export const supabaseProvider: StorageProvider = {
         upsert: true,
       });
     if (error) {
-      console.log(`[DEBUG] supabase uploadObject "${fileName}" ERROR: ${error.message}`);
+      logStorageError(`supabase uploadObject "${fileName}"`, error);
       throw error;
     }
     const { data } = supabase()
@@ -101,7 +105,7 @@ export const supabaseProvider: StorageProvider = {
     if (!name) return;
     const { error } = await supabase().storage.from(bucket).remove([name]);
     if (error) {
-      console.log(`[DEBUG] supabase deleteObject "${name}" ERROR: ${error.message}`);
+      logStorageError(`supabase deleteObject "${name}"`, error);
       throw error;
     }
     console.log(`[DEBUG] supabase deleteObject "${name}" OK in ${Date.now() - start}ms`);

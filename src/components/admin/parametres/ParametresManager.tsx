@@ -41,19 +41,29 @@ export function ParametresManager({
       return;
     }
     setSaving(true);
-    const result = await saveSettingsContentAction(content);
-    setSaving(false);
-    if (result.ok) {
-      setDirty(false);
-      setToast({
-        kind: "success",
-        message: "Paramètres enregistrés. Ils alimenteront le site public.",
-      });
-    } else {
+    try {
+      const result = await saveSettingsContentAction(content);
+      if (result.ok) {
+        setDirty(false);
+        setToast({
+          kind: "success",
+          message: "Paramètres enregistrés. Ils alimenteront le site public.",
+        });
+      } else {
+        setToast({
+          kind: "error",
+          message: result.message ?? "L'enregistrement a échoué.",
+        });
+      }
+    } catch (error) {
+      console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message: result.message ?? "L'enregistrement a échoué.",
+        message:
+          "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
       });
+    } finally {
+      setSaving(false);
     }
   };
 

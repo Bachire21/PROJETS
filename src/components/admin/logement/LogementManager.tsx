@@ -249,14 +249,24 @@ return key === "steps"
 
   const save = async (contentToSave: LogementPageData) => {
     setSaving(true);
-    const result = await saveLogementContentAction(contentToSave);
-    setSaving(false);
-    if (result.ok) {
-      setContent(contentToSave);
-      setDirty(false);
-      setToast({ kind: "success", message: "Contenu enregistré. Il est visible sur /logement-installation." });
-    } else {
-      setToast({ kind: "error", message: result.message ?? "L'enregistrement a échoué." });
+    try {
+      const result = await saveLogementContentAction(contentToSave);
+      if (result.ok) {
+        setContent(contentToSave);
+        setDirty(false);
+        setToast({ kind: "success", message: "Contenu enregistré. Il est visible sur /logement-installation." });
+      } else {
+        setToast({ kind: "error", message: result.message ?? "L'enregistrement a échoué." });
+      }
+    } catch (error) {
+      console.error("save : la Server Action a rejeté la requête.", error);
+      setToast({
+        kind: "error",
+        message:
+          "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+      });
+    } finally {
+      setSaving(false);
     }
   };
 

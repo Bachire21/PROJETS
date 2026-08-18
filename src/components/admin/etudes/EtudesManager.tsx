@@ -93,20 +93,30 @@ export function EtudesManager({
 
   const save = async (contentToSave: EtudesPageData) => {
     setSaving(true);
-    const result = await saveEtudesContentAction(contentToSave);
-    setSaving(false);
-    if (result.ok) {
-      setContent(contentToSave);
-      setDirty(false);
-      setToast({
-        kind: "success",
-        message: "Contenu enregistré. Il est visible sur /etudier-au-maroc.",
-      });
-    } else {
+    try {
+      const result = await saveEtudesContentAction(contentToSave);
+      if (result.ok) {
+        setContent(contentToSave);
+        setDirty(false);
+        setToast({
+          kind: "success",
+          message: "Contenu enregistré. Il est visible sur /etudier-au-maroc.",
+        });
+      } else {
+        setToast({
+          kind: "error",
+          message: result.message ?? "L'enregistrement a échoué.",
+        });
+      }
+    } catch (error) {
+      console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message: result.message ?? "L'enregistrement a échoué.",
+        message:
+          "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
       });
+    } finally {
+      setSaving(false);
     }
   };
 

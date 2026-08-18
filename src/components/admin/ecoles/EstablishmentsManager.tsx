@@ -136,21 +136,30 @@ export function EstablishmentsManager({
             item.id === clean.id ? clean : item,
           ),
     };
-    const result = await saveEcolesContentAction(
-      next,
-      isNew ? "Établissement ajouté" : "Établissement modifié",
-    );
-    setSaving(false);
-    if (result.ok) {
-      setContent(next);
-      closeEditor();
-      notify(
-        isNew
-          ? "Établissement ajouté en brouillon. Le publier pour l'afficher sur /ecoles-formations."
-          : "Établissement enregistré.",
+    try {
+      const result = await saveEcolesContentAction(
+        next,
+        isNew ? "Établissement ajouté" : "Établissement modifié",
       );
-    } else {
-      notify(result.message ?? "L'enregistrement a échoué.", "error");
+      if (result.ok) {
+        setContent(next);
+        closeEditor();
+        notify(
+          isNew
+            ? "Établissement ajouté en brouillon. Le publier pour l'afficher sur /ecoles-formations."
+            : "Établissement enregistré.",
+        );
+      } else {
+        notify(result.message ?? "L'enregistrement a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("saveItem : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -160,31 +169,48 @@ export function EstablishmentsManager({
       current.id === item.id ? { ...current, published } : current,
     );
     setContent({ ...content, establishments: nextItems });
-    const result = await publishEstablishmentAction(item, published);
-    if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
-    else
+    try {
+      const result = await publishEstablishmentAction(item, published);
+      if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
+      else
+        notify(
+          published
+            ? "Établissement publié : visible sur /ecoles-formations."
+            : "Établissement dépublié : masqué du site public.",
+        );
+    } catch (error) {
+      console.error("togglePublished : la Server Action a rejeté la requête.", error);
       notify(
-        published
-          ? "Établissement publié : visible sur /ecoles-formations."
-          : "Établissement dépublié : masqué du site public.",
+        "L'action n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
       );
+    }
   };
 
   const confirmDelete = async () => {
     if (!deleting) return;
-    const result = await deleteEstablishmentAction(deleting);
-    if (result.ok) {
-      setContent({
-        ...content,
-        establishments: content.establishments.filter(
-          (item) => item.id !== deleting.id,
-        ),
-      });
-      notify("Établissement supprimé.");
-    } else {
-      notify(result.message ?? "La suppression a échoué.", "error");
+    try {
+      const result = await deleteEstablishmentAction(deleting);
+      if (result.ok) {
+        setContent({
+          ...content,
+          establishments: content.establishments.filter(
+            (item) => item.id !== deleting.id,
+          ),
+        });
+        notify("Établissement supprimé.");
+      } else {
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setDeleting(null);
     }
-    setDeleting(null);
   };
 
   const patch = (patch: Partial<Establishment>) => setDraft({ ...draft, ...patch });

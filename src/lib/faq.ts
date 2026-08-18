@@ -1,5 +1,6 @@
 import { loadFaqContent } from "@/lib/content-store";
 import type { FAQItem } from "@/data/faq";
+import { logStorageError } from "@/lib/storage/errors";
 
 export type FaqPageSource =
   | { status: "success"; faqItems: FAQItem[]; page: FaqPage }
@@ -22,7 +23,7 @@ export async function getFaqPageData(): Promise<FaqPageSource> {
     console.log(`[DEBUG] getFaqPageData OK (${faqItems.length} published) in ${Date.now() - start}ms`);
     return { status: "success", faqItems, page: content.page };
   } catch (error) {
-    console.log(`[DEBUG] getFaqPageData ERROR: ${(error as Error).message}`);
+    logStorageError("getFaqPageData", error);
     return { status: "error" };
   }
 }

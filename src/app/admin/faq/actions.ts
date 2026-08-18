@@ -7,6 +7,7 @@ import {
 } from "@/lib/content-store";
 import type { FaqContent } from "@/lib/content-store";
 import type { FAQItem } from "@/data/faq";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -21,8 +22,11 @@ export async function saveFaqContentAction(
     console.log("[DEBUG] action saveFaqContentAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action saveFaqContentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'enregistrement a échoué." };
+    logStorageError("saveFaqContentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'enregistrement a échoué."),
+    };
   }
 }
 
@@ -44,8 +48,11 @@ export async function publishFaqAction(
     console.log(`[DEBUG] action publishFaqAction OK (published=${published})`);
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action publishFaqAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'action a échoué." };
+    logStorageError("publishFaqAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'action a échoué."),
+    };
   }
 }
 
@@ -60,7 +67,10 @@ export async function deleteFaqAction(item: FAQItem): Promise<SaveResult> {
     console.log("[DEBUG] action deleteFaqAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action deleteFaqAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "La suppression a échoué." };
+    logStorageError("deleteFaqAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La suppression a échoué."),
+    };
   }
 }

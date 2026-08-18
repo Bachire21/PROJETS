@@ -64,15 +64,23 @@ export function MediaPickerField({
   const upload = async (file: File) => {
     setUploading(true);
     setError("");
-    const formData = new FormData();
-    formData.append("file", file);
-    const result = await uploadMediaAction(formData);
-    setUploading(false);
-    if (result.ok && result.media) {
-      setItems((current) => [result.media as MediaItem, ...current]);
-      setSelectedId((result.media as MediaItem).id);
-    } else {
-      setError(result.message ?? "L'import de l'image a échoué.");
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const result = await uploadMediaAction(formData);
+      if (result.ok && result.media) {
+        setItems((current) => [result.media as MediaItem, ...current]);
+        setSelectedId((result.media as MediaItem).id);
+      } else {
+        setError(result.message ?? "L'import de l'image a échoué.");
+      }
+    } catch (error) {
+      console.error("upload : la Server Action a rejeté la requête.", error);
+      setError(
+        "L'import n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+      );
+    } finally {
+      setUploading(false);
     }
   };
 

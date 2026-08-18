@@ -5,6 +5,7 @@ import {
   appendActivityLog,
 } from "@/lib/content-store";
 import type { SiteSettings } from "@/data/settings";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -21,7 +22,10 @@ export async function saveSettingsContentAction(
     console.log("[DEBUG] action saveSettingsContentAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action saveSettingsContentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'enregistrement a échoué." };
+    logStorageError("saveSettingsContentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'enregistrement a échoué."),
+    };
   }
 }

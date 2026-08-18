@@ -107,21 +107,30 @@ export function MediaManager({
       return;
     }
     setSaving(true);
-    const result = await addMediaAction(draft);
-    setSaving(false);
-    if (result.ok) {
-      const media: MediaItem = {
-        ...draft,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        custom: true,
-      };
-      setContent({ items: [media, ...content.items] });
-      setAdding(false);
-      setDraft(emptyItem);
-      notify("Média ajouté à la médiathèque.");
-    } else {
-      notify(result.message ?? "L'ajout a échoué.", "error");
+    try {
+      const result = await addMediaAction(draft);
+      if (result.ok) {
+        const media: MediaItem = {
+          ...draft,
+          id: crypto.randomUUID(),
+          createdAt: new Date().toISOString(),
+          custom: true,
+        };
+        setContent({ items: [media, ...content.items] });
+        setAdding(false);
+        setDraft(emptyItem);
+        notify("Média ajouté à la médiathèque.");
+      } else {
+        notify(result.message ?? "L'ajout a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("addItem : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'ajout n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -136,16 +145,25 @@ export function MediaManager({
 
   const confirmDelete = async () => {
     if (!deleting) return;
-    const result = await deleteMediaAction(deleting);
-    if (result.ok) {
-      setContent({
-        items: content.items.filter((item) => item.id !== deleting.id),
-      });
-      notify("Média supprimé de la médiathèque.");
-    } else {
-      notify(result.message ?? "La suppression a échoué.", "error");
+    try {
+      const result = await deleteMediaAction(deleting);
+      if (result.ok) {
+        setContent({
+          items: content.items.filter((item) => item.id !== deleting.id),
+        });
+        notify("Média supprimé de la médiathèque.");
+      } else {
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setDeleting(null);
     }
-    setDeleting(null);
   };
 
   const isPublicImage = (item: MediaItem) =>

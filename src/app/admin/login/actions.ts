@@ -17,14 +17,22 @@ export async function loginAction(
     return { error: "Identifiants incorrects. Vérifiez l'email et le code d'accès." };
   }
 
-  const store = await cookies();
-  store.set(sessionCookieName, createSessionToken(), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 12 * 60 * 60,
-  });
+  try {
+    const store = await cookies();
+    store.set(sessionCookieName, createSessionToken(), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 12 * 60 * 60,
+    });
+  } catch (error) {
+    console.error("loginAction : création de session impossible.", error);
+    return {
+      error:
+        "La connexion a échoué pour un problème de configuration serveur. Contacte l'administrateur du site.",
+    };
+  }
 
   console.log("[DEBUG] action loginAction OK (session créée)");
 

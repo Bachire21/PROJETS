@@ -82,13 +82,22 @@ export function DemandeFiche({
 
   const changeStatus = async (status: OrientationRequestStatus) => {
     setSavingStatus(true);
-    const result = await updateRequestStatusAction(request.id, status);
-    setSavingStatus(false);
-    if (result.ok) {
-      setRequest({ ...request, status, updatedAt: new Date().toISOString() });
-      notify("Statut mis à jour.");
-    } else {
-      notify(result.message ?? "La mise à jour a échoué.", "error");
+    try {
+      const result = await updateRequestStatusAction(request.id, status);
+      if (result.ok) {
+        setRequest({ ...request, status, updatedAt: new Date().toISOString() });
+        notify("Statut mis à jour.");
+      } else {
+        notify(result.message ?? "La mise à jour a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("changeStatus : la Server Action a rejeté la requête.", error);
+      notify(
+        "La mise à jour n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setSavingStatus(false);
     }
   };
 
@@ -98,33 +107,52 @@ export function DemandeFiche({
       return;
     }
     setAddingNote(true);
-    const result = await addRequestNoteAction(request.id, note);
-    setAddingNote(false);
-    if (result.ok) {
-      setRequest({
-        ...request,
-        notes: [
-          ...request.notes,
-          { id: crypto.randomUUID(), text: note.trim(), createdAt: new Date().toISOString() },
-        ],
-        updatedAt: new Date().toISOString(),
-      });
-      setNote("");
-      notify("Note interne ajoutée. Elle n'est visible que dans l'Admin.");
-    } else {
-      notify(result.message ?? "L'ajout de la note a échoué.", "error");
+    try {
+      const result = await addRequestNoteAction(request.id, note);
+      if (result.ok) {
+        setRequest({
+          ...request,
+          notes: [
+            ...request.notes,
+            { id: crypto.randomUUID(), text: note.trim(), createdAt: new Date().toISOString() },
+          ],
+          updatedAt: new Date().toISOString(),
+        });
+        setNote("");
+        notify("Note interne ajoutée. Elle n'est visible que dans l'Admin.");
+      } else {
+        notify(result.message ?? "L'ajout de la note a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("addNote : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'ajout de la note n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setAddingNote(false);
     }
   };
 
   const confirmArchive = async () => {
-    const result = await archiveRequestAction(request.id);
-    if (result.ok) {
-      setRequest({ ...request, status: "archivee", updatedAt: new Date().toISOString() });
-      notify("Demande archivée.");
-    } else {
-      notify(result.message ?? "L'archivage a échoué.", "error");
+    setArchiving(true);
+    try {
+      const result = await archiveRequestAction(request.id);
+      if (result.ok) {
+        setRequest({ ...request, status: "archivee", updatedAt: new Date().toISOString() });
+        notify("Demande archivée.");
+      } else {
+        notify(result.message ?? "L'archivage a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmArchive : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'archivage n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setArchiving(false);
     }
-    setArchiving(false);
   };
 
   return (

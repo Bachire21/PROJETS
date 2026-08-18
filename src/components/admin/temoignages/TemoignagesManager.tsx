@@ -137,21 +137,30 @@ export function TemoignagesManager({
             item.id === draft.id ? draft : item,
           ),
     };
-    const result = await saveTemoignagesContentAction(
-      next,
-      isNew ? "Témoignage ajouté" : "Témoignage modifié",
-    );
-    setSaving(false);
-    if (result.ok) {
-      setContent(next);
-      closeEditor();
-      notify(
-        isNew
-          ? "Témoignage ajouté en brouillon. Le publier pour le rendre visible."
-          : "Témoignage enregistré.",
+    try {
+      const result = await saveTemoignagesContentAction(
+        next,
+        isNew ? "Témoignage ajouté" : "Témoignage modifié",
       );
-    } else {
-      notify(result.message ?? "L'enregistrement a échoué.", "error");
+      if (result.ok) {
+        setContent(next);
+        closeEditor();
+        notify(
+          isNew
+            ? "Témoignage ajouté en brouillon. Le publier pour le rendre visible."
+            : "Témoignage enregistré.",
+        );
+      } else {
+        notify(result.message ?? "L'enregistrement a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("saveItem : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -161,31 +170,48 @@ export function TemoignagesManager({
       current.id === item.id ? { ...current, published } : current,
     );
     setContent({ ...content, testimonials: nextItems });
-    const result = await publishTestimonialAction(item, published);
-    if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
-    else
+    try {
+      const result = await publishTestimonialAction(item, published);
+      if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
+      else
+        notify(
+          published
+            ? "Témoignage publié : visible sur /temoignages."
+            : "Témoignage dépublié : masqué du site public.",
+        );
+    } catch (error) {
+      console.error("togglePublished : la Server Action a rejeté la requête.", error);
       notify(
-        published
-          ? "Témoignage publié : visible sur /temoignages."
-          : "Témoignage dépublié : masqué du site public.",
+        "L'action n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
       );
+    }
   };
 
   const confirmDelete = async () => {
     if (!deleting) return;
-    const result = await deleteTestimonialAction(deleting);
-    if (result.ok) {
-      setContent({
-        ...content,
-        testimonials: content.testimonials.filter(
-          (item) => item.id !== deleting.id,
-        ),
-      });
-      notify("Témoignage supprimé.");
-    } else {
-      notify(result.message ?? "La suppression a échoué.", "error");
+    try {
+      const result = await deleteTestimonialAction(deleting);
+      if (result.ok) {
+        setContent({
+          ...content,
+          testimonials: content.testimonials.filter(
+            (item) => item.id !== deleting.id,
+          ),
+        });
+        notify("Témoignage supprimé.");
+      } else {
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setDeleting(null);
     }
-    setDeleting(null);
   };
 
   const move = (index: number, direction: -1 | 1) => {
@@ -200,10 +226,18 @@ export function TemoignagesManager({
     saveTemoignagesContentAction(
       { ...content, testimonials: next },
       "Témoignages réordonnés",
-    ).then((result) => {
-      if (result.ok) notify("Ordre enregistré.");
-      else notify(result.message ?? "Erreur lors de l'enregistrement.", "error");
-    });
+    )
+      .then((result) => {
+        if (result.ok) notify("Ordre enregistré.");
+        else notify(result.message ?? "Erreur lors de l'enregistrement.", "error");
+      })
+      .catch((error) => {
+        console.error("move : la Server Action a rejeté la requête.", error);
+        notify(
+          "L'enregistrement de l'ordre n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+          "error",
+        );
+      });
   };
 
   return (

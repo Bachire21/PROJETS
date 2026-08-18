@@ -5,6 +5,7 @@ import {
   appendActivityLog,
 } from "@/lib/content-store";
 import type { EtudesPageData } from "@/data/etudier-au-maroc";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -22,7 +23,10 @@ export async function saveEtudesContentAction(
     console.log("[DEBUG] action saveEtudesContentAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action saveEtudesContentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'enregistrement a échoué." };
+    logStorageError("saveEtudesContentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'enregistrement a échoué."),
+    };
   }
 }

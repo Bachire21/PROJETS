@@ -7,6 +7,7 @@ import {
 } from "@/lib/content-store";
 import type { StudentFormData } from "@/data/find-school";
 import { nextRequestNumber } from "@/lib/demandes";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SubmitResult = { ok: boolean; message?: string };
 
@@ -55,11 +56,13 @@ export async function submitOrientationRequest(
     console.log(`[DEBUG] action submitOrientationRequest OK (${number})`);
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action submitOrientationRequest FAILED: ${(error as Error).message}`);
+    logStorageError("submitOrientationRequest", error);
     return {
       ok: false,
-      message:
+      message: safeStorageMessage(
+        error,
         "L'envoi de ta demande a échoué. Réessaie dans quelques instants.",
+      ),
     };
   }
 }

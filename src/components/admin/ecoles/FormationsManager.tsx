@@ -207,21 +207,30 @@ export function FormationsManager({
       ...content,
       establishments: [...content.establishments, establishment],
     };
-    const result = await saveEcolesContentAction(next, "Établissement ajouté");
-    setSavingEstablishment(false);
-    if (result.ok) {
-      setContent(next);
-      setDraft({ ...draft, establishmentId: establishment.id });
-      setEstQuery(establishment.name);
-      setEstDraft(emptyNewEstablishment);
-      setAddingEstablishment(false);
+    try {
+      const result = await saveEcolesContentAction(next, "Établissement ajouté");
+      if (result.ok) {
+        setContent(next);
+        setDraft({ ...draft, establishmentId: establishment.id });
+        setEstQuery(establishment.name);
+        setEstDraft(emptyNewEstablishment);
+        setAddingEstablishment(false);
+        notify(
+          estDraft.published
+            ? "Établissement créé et publié : la formation sera visible sur le site public."
+            : "Établissement créé en brouillon. La formation n'apparaîtra sur le site public qu'après publication de l'établissement.",
+        );
+      } else {
+        notify(result.message ?? "L'enregistrement a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("createEstablishment : la Server Action a rejeté la requête.", error);
       notify(
-        estDraft.published
-          ? "Établissement créé et publié : la formation sera visible sur le site public."
-          : "Établissement créé en brouillon. La formation n'apparaîtra sur le site public qu'après publication de l'établissement.",
+        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
       );
-    } else {
-      notify(result.message ?? "L'enregistrement a échoué.", "error");
+    } finally {
+      setSavingEstablishment(false);
     }
   };
 
@@ -242,23 +251,32 @@ export function FormationsManager({
         ? [...content.formations, clean]
         : content.formations.map((item) => (item.id === clean.id ? clean : item)),
     };
-    const result = await saveEcolesContentAction(
-      next,
-      isNew ? "Formation ajoutée" : "Formation modifiée",
-    );
-    setSaving(false);
-    if (result.ok) {
-      setContent(next);
-      closeEditor();
-      notify(
-        isNew
-          ? isPubliclyVisible
-            ? "Formation ajoutée : visible sur le site public."
-            : "Formation ajoutée en brouillon. Elle n'apparaîtra sur le site public qu'une fois publiée et rattachée à un établissement publié."
-          : "Formation enregistrée.",
+    try {
+      const result = await saveEcolesContentAction(
+        next,
+        isNew ? "Formation ajoutée" : "Formation modifiée",
       );
-    } else {
-      notify(result.message ?? "L'enregistrement a échoué.", "error");
+      if (result.ok) {
+        setContent(next);
+        closeEditor();
+        notify(
+          isNew
+            ? isPubliclyVisible
+              ? "Formation ajoutée : visible sur le site public."
+              : "Formation ajoutée en brouillon. Elle n'apparaîtra sur le site public qu'une fois publiée et rattachée à un établissement publié."
+            : "Formation enregistrée.",
+        );
+      } else {
+        notify(result.message ?? "L'enregistrement a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("saveItem : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -268,37 +286,54 @@ export function FormationsManager({
       current.id === item.id ? { ...current, published } : current,
     );
     setContent({ ...content, formations: nextItems });
-    const result = await publishFormationAction(item, published);
-    if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
-    else {
-      if (published) {
-        const linked = content.establishments.find(
-          (current) => current.id === item.establishmentId,
-        );
-        notify(
-          linked && linked.published
-            ? "Formation publiée : visible sur le site public."
-            : "Formation publiée. Elle n'apparaîtra sur le site public qu'après publication de son établissement.",
-        );
-      } else {
-        notify("Formation dépubliée : masquée du site public.");
+    try {
+      const result = await publishFormationAction(item, published);
+      if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
+      else {
+        if (published) {
+          const linked = content.establishments.find(
+            (current) => current.id === item.establishmentId,
+          );
+          notify(
+            linked && linked.published
+              ? "Formation publiée : visible sur le site public."
+              : "Formation publiée. Elle n'apparaîtra sur le site public qu'après publication de son établissement.",
+          );
+        } else {
+          notify("Formation dépubliée : masquée du site public.");
+        }
       }
+    } catch (error) {
+      console.error("togglePublished : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'action n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
     }
   };
 
   const confirmDelete = async () => {
     if (!deleting) return;
-    const result = await deleteFormationAction(deleting);
-    if (result.ok) {
-      setContent({
-        ...content,
-        formations: content.formations.filter((item) => item.id !== deleting.id),
-      });
-      notify("Formation supprimée.");
-    } else {
-      notify(result.message ?? "La suppression a échoué.", "error");
+    try {
+      const result = await deleteFormationAction(deleting);
+      if (result.ok) {
+        setContent({
+          ...content,
+          formations: content.formations.filter((item) => item.id !== deleting.id),
+        });
+        notify("Formation supprimée.");
+      } else {
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setDeleting(null);
     }
-    setDeleting(null);
   };
 
   const patch = (patch: Partial<Formation>) => setDraft({ ...draft, ...patch });

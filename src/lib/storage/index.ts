@@ -2,6 +2,7 @@ import type { StorageProvider } from "./types";
 import { DOCUMENT_KEYS } from "./types";
 import { fileProvider } from "./file-provider";
 import { supabaseProvider } from "./supabase-provider";
+import { logStorageError } from "./errors";
 
 export { DOCUMENT_KEYS };
 
@@ -32,7 +33,7 @@ export async function readStoredJson<T>(key: string, fallback: () => T): Promise
     console.log(`[DEBUG] readStoredJson "${key}" -> ${raw.length} bytes in ${Date.now() - start}ms`);
     return parsed;
   } catch (error) {
-    console.log(`[DEBUG] readStoredJson "${key}" -> parse error, fallback. ${(error as Error).message}`);
+    logStorageError(`readStoredJson "${key}" (parse)`, error);
     return JSON.parse(JSON.stringify(fallback())) as T;
   }
 }
@@ -44,7 +45,7 @@ export async function writeStoredJson<T>(key: string, content: T): Promise<void>
     await getStorage().writeDocument(key, json);
     console.log(`[DEBUG] writeStoredJson "${key}" -> ${json.length} bytes in ${Date.now() - start}ms`);
   } catch (error) {
-    console.log(`[DEBUG] writeStoredJson "${key}" FAILED: ${(error as Error).message}`);
+    logStorageError(`writeStoredJson "${key}"`, error);
     throw error;
   }
 }

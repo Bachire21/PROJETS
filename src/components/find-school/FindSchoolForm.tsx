@@ -114,13 +114,20 @@ export function FindSchoolForm() {
       scrollToForm();
     } else {
       startTransition(async () => {
-        const result = await submitOrientationRequest(data);
-        if (result.ok) {
-          setSubmitError("");
-          setSubmitted(true);
-          scrollToForm();
-        } else {
-          setSubmitError(result.message ?? "L'envoi de ta demande a échoué.");
+        try {
+          const result = await submitOrientationRequest(data);
+          if (result.ok) {
+            setSubmitError("");
+            setSubmitted(true);
+            scrollToForm();
+          } else {
+            setSubmitError(result.message ?? "L'envoi de ta demande a échoué.");
+          }
+        } catch (error) {
+          console.error("handleContinue : la Server Action a rejeté la requête.", error);
+          setSubmitError(
+            "L'envoi n'a pas abouti (réseau ou serveur indisponible). Réessaie dans quelques instants.",
+          );
         }
       });
     }

@@ -7,6 +7,7 @@ import {
 } from "@/lib/content-store";
 import type { OrientationRequestStatus } from "@/data/demandes";
 import { orientationRequestStatuses } from "@/data/demandes";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -37,8 +38,11 @@ export async function updateRequestStatusAction(
     console.log(`[DEBUG] action updateRequestStatusAction OK (status=${status})`);
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action updateRequestStatusAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "La mise à jour a échoué." };
+    logStorageError("updateRequestStatusAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La mise à jour a échoué."),
+    };
   }
 }
 
@@ -81,8 +85,11 @@ export async function addRequestNoteAction(
     console.log("[DEBUG] action addRequestNoteAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action addRequestNoteAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'ajout de la note a échoué." };
+    logStorageError("addRequestNoteAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'ajout de la note a échoué."),
+    };
   }
 }
 

@@ -1,5 +1,6 @@
 import { loadLogementContent } from "@/lib/content-store";
 import type { LogementPageData } from "@/data/logement-installation";
+import { logStorageError } from "@/lib/storage/errors";
 
 export type LogementPageSource =
   | { status: "success"; data: LogementPageData }
@@ -17,7 +18,7 @@ export async function getLogementPageData(): Promise<LogementPageSource> {
     console.log(`[DEBUG] getLogementPageData OK in ${Date.now() - start}ms`);
     return { status: "success", data };
   } catch (error) {
-    console.log(`[DEBUG] getLogementPageData ERROR: ${(error as Error).message}`);
+    logStorageError("getLogementPageData", error);
     return { status: "error" };
   }
 }

@@ -120,17 +120,26 @@ export function FaqManager({ initialContent }: { initialContent: FaqContent }) {
         ? [...content.faqItems, draft]
         : content.faqItems.map((item) => (item.id === draft.id ? draft : item)),
     };
-    const result = await saveFaqContentAction(
-      next,
-      isNew ? "FAQ ajoutée" : "FAQ modifiée",
-    );
-    setSaving(false);
-    if (result.ok) {
-      setContent(next);
-      closeEditor();
-      notify(isNew ? "Question ajoutée. La publier pour la rendre visible." : "Question enregistrée.");
-    } else {
-      notify(result.message ?? "L'enregistrement a échoué.", "error");
+    try {
+      const result = await saveFaqContentAction(
+        next,
+        isNew ? "FAQ ajoutée" : "FAQ modifiée",
+      );
+      if (result.ok) {
+        setContent(next);
+        closeEditor();
+        notify(isNew ? "Question ajoutée. La publier pour la rendre visible." : "Question enregistrée.");
+      } else {
+        notify(result.message ?? "L'enregistrement a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("saveItem : la Server Action a rejeté la requête.", error);
+      notify(
+        "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -140,29 +149,46 @@ export function FaqManager({ initialContent }: { initialContent: FaqContent }) {
       current.id === item.id ? { ...current, published } : current,
     );
     setContent({ ...content, faqItems: nextItems });
-    const result = await publishFaqAction(item, published);
-    if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
-    else
+    try {
+      const result = await publishFaqAction(item, published);
+      if (!result.ok) notify(result.message ?? "L'action a échoué.", "error");
+      else
+        notify(
+          published
+            ? "Question publiée : visible sur /faq."
+            : "Question dépubliée : masquée du site public.",
+        );
+    } catch (error) {
+      console.error("togglePublished : la Server Action a rejeté la requête.", error);
       notify(
-        published
-          ? "Question publiée : visible sur /faq."
-          : "Question dépubliée : masquée du site public.",
+        "L'action n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
       );
+    }
   };
 
   const confirmDelete = async () => {
     if (!deleting) return;
-    const result = await deleteFaqAction(deleting);
-    if (result.ok) {
-      setContent({
-        ...content,
-        faqItems: content.faqItems.filter((item) => item.id !== deleting.id),
-      });
-      notify("Question supprimée.");
-    } else {
-      notify(result.message ?? "La suppression a échoué.", "error");
+    try {
+      const result = await deleteFaqAction(deleting);
+      if (result.ok) {
+        setContent({
+          ...content,
+          faqItems: content.faqItems.filter((item) => item.id !== deleting.id),
+        });
+        notify("Question supprimée.");
+      } else {
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        "error",
+      );
+    } finally {
+      setDeleting(null);
     }
-    setDeleting(null);
   };
 
   const move = (index: number, direction: -1 | 1) => {
@@ -174,12 +200,18 @@ export function FaqManager({ initialContent }: { initialContent: FaqContent }) {
       item.order = i + 1;
     });
     setContent({ ...content, faqItems: next });
-    saveFaqContentAction({ ...content, faqItems: next }, "FAQ réordonnée").then(
-      (result) => {
+    saveFaqContentAction({ ...content, faqItems: next }, "FAQ réordonnée")
+      .then((result) => {
         if (result.ok) notify("Ordre enregistré.");
         else notify(result.message ?? "Erreur lors de l'enregistrement.", "error");
-      },
-    );
+      })
+      .catch((error) => {
+        console.error("move : la Server Action a rejeté la requête.", error);
+        notify(
+          "L'enregistrement de l'ordre n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+          "error",
+        );
+      });
   };
 
   return (

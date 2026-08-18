@@ -1,5 +1,6 @@
 import { loadTemoignagesContent } from "@/lib/content-store";
 import type { Testimonial } from "@/data/temoignages";
+import { logStorageError } from "@/lib/storage/errors";
 
 export type TemoignagesPageSource =
   | { status: "success"; testimonials: Testimonial[]; page: TemoignagesPage }
@@ -24,7 +25,7 @@ export async function getTemoignagesPageData(): Promise<TemoignagesPageSource> {
     console.log(`[DEBUG] getTemoignagesPageData OK (${testimonials.length} published) in ${Date.now() - start}ms`);
     return { status: "success", testimonials, page: content.page };
   } catch (error) {
-    console.log(`[DEBUG] getTemoignagesPageData ERROR: ${(error as Error).message}`);
+    logStorageError("getTemoignagesPageData", error);
     return { status: "error" };
   }
 }

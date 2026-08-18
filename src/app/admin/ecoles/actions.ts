@@ -7,6 +7,7 @@ import {
 } from "@/lib/content-store";
 import type { EcolesContent } from "@/lib/content-store";
 import type { Establishment, Formation } from "@/data/ecoles-formations";
+import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -24,8 +25,11 @@ export async function saveEcolesContentAction(
     console.log("[DEBUG] action saveEcolesContentAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action saveEcolesContentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'enregistrement a échoué." };
+    logStorageError("saveEcolesContentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'enregistrement a échoué."),
+    };
   }
 }
 
@@ -47,8 +51,11 @@ export async function publishEstablishmentAction(
     console.log(`[DEBUG] action publishEstablishmentAction OK (published=${published})`);
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action publishEstablishmentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'action a échoué." };
+    logStorageError("publishEstablishmentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'action a échoué."),
+    };
   }
 }
 
@@ -65,8 +72,11 @@ export async function deleteEstablishmentAction(
     console.log("[DEBUG] action deleteEstablishmentAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action deleteEstablishmentAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "La suppression a échoué." };
+    logStorageError("deleteEstablishmentAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La suppression a échoué."),
+    };
   }
 }
 
@@ -88,8 +98,11 @@ export async function publishFormationAction(
     console.log(`[DEBUG] action publishFormationAction OK (published=${published})`);
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action publishFormationAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "L'action a échoué." };
+    logStorageError("publishFormationAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "L'action a échoué."),
+    };
   }
 }
 
@@ -106,7 +119,10 @@ export async function deleteFormationAction(
     console.log("[DEBUG] action deleteFormationAction OK");
     return { ok: true };
   } catch (error) {
-    console.log(`[DEBUG] action deleteFormationAction FAILED: ${(error as Error).message}`);
-    return { ok: false, message: "La suppression a échoué." };
+    logStorageError("deleteFormationAction", error);
+    return {
+      ok: false,
+      message: safeStorageMessage(error, "La suppression a échoué."),
+    };
   }
 }

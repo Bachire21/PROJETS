@@ -82,20 +82,30 @@ export function ServicesManager({
 
   const save = async (contentToSave: ServicesPageData) => {
     setSaving(true);
-    const result = await saveServicesContentAction(contentToSave);
-    setSaving(false);
-    if (result.ok) {
-      setContent(contentToSave);
-      setDirty(false);
-      setToast({
-        kind: "success",
-        message: "Contenu enregistré. Il est visible sur /nos-services.",
-      });
-    } else {
+    try {
+      const result = await saveServicesContentAction(contentToSave);
+      if (result.ok) {
+        setContent(contentToSave);
+        setDirty(false);
+        setToast({
+          kind: "success",
+          message: "Contenu enregistré. Il est visible sur /nos-services.",
+        });
+      } else {
+        setToast({
+          kind: "error",
+          message: result.message ?? "L'enregistrement a échoué.",
+        });
+      }
+    } catch (error) {
+      console.error("save : la Server Action a rejeté la requête.", error);
       setToast({
         kind: "error",
-        message: result.message ?? "L'enregistrement a échoué.",
+        message:
+          "L'enregistrement n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
       });
+    } finally {
+      setSaving(false);
     }
   };
 
