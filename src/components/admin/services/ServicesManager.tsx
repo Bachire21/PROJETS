@@ -478,6 +478,16 @@ export function ServicesManager({
               />
             </Field>
           </div>
+          <div className="mt-5">
+            <Field label="Note sous la liste">
+              <TextArea
+                value={content.servicesSection.note ?? ""}
+                onChange={(value) =>
+                  patchSection("servicesSection", { note: value })
+                }
+              />
+            </Field>
+          </div>
           <div className="mt-6">
             <ServicesListEditor
               services={sortByOrder(content.servicesSection.services)}

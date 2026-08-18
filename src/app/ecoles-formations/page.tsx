@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Écoles & Formations au Maroc | Campus Way",
   alternates: { canonical: "/ecoles-formations" },
   description:
-    "Découvrez les établissements et les formations au Maroc : universités publiques, grandes écoles, licences et masters, classés par filière, niveau et ville.",
+    "Écoles privées au Maroc, formations, niveaux accessibles et frais : découvre les établissements vers lesquels Campus Way peut t'orienter pour tes études au Maroc.",
 };
 
 // La page relit le contenu géré par l'Admin à chaque requête :

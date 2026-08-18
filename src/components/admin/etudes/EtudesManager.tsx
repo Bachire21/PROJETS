@@ -7,7 +7,6 @@ import type {
   EtudeJourneyStep,
   EtudesPageData,
 } from "@/data/etudier-au-maroc";
-import type { MediaItem } from "@/data/media";
 import { sortByOrder } from "@/lib/logement-content-utils";
 import { saveEtudesContentAction } from "@/app/admin/etudes/actions";
 import { actionErrorMessage } from "@/lib/client-action-error";
@@ -57,10 +56,8 @@ const sectionKeys: (keyof EtudesPageData)[] = [
 
 export function EtudesManager({
   initialContent,
-  initialMedia,
 }: {
   initialContent: EtudesPageData;
-  initialMedia: MediaItem[];
 }) {
   const [content, setContent] = useState<EtudesPageData>(initialContent);
   const [openSection, setOpenSection] = useState<string>("hero");
@@ -500,7 +497,6 @@ export function EtudesManager({
                 <MediaPickerField
                   value={content.hero.image}
                   onChange={(image) => patchSection("hero", { image })}
-                  initialMedia={initialMedia}
                   defaultSrc="/images/etudier-hero.jpg"
                 />
               </Field>

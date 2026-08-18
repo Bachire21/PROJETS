@@ -1,32 +1,79 @@
 "use server";
 
 import path from "node:path";
+import { revalidatePath } from "next/cache";
 import {
   loadMediaContent,
   saveMediaContent,
   appendActivityLog,
 } from "@/lib/content-store";
 import type { MediaItem } from "@/data/media";
-import { knownImages } from "@/components/admin/ui/fields";
+import { knownImages } from "@/lib/known-images";
+import { computeMediaUsage, pageLabel } from "@/lib/media-usage";
 import { getStorage, isSupabaseUrl } from "@/lib/storage";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
 import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
-const ALLOWED_EXTENSIONS = new Set([
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".webp",
-  ".gif",
-  ".avif",
-  ".svg",
-]);
-// 4 Mo max : sous la limite des Server Actions (6 Mo configurés) et sous
-// la limite de body des fonctions Vercel (4,5 Mo), en laissant la marge
-// de l'encodage multipart.
-const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+// Formats acceptés, classés par type de média. Le dossier du bucket
+// (`images/`, `documents/`, `videos/`) dépend du type détecté : la
+// médiathèque reste organisée même quand elle grossit.
+const TYPE_BY_EXTENSION: Record<string, MediaItem["type"]> = {
+  ".jpg": "image",
+  ".jpeg": "image",
+  ".png": "image",
+  ".webp": "image",
+  ".gif": "image",
+  ".avif": "image",
+  ".svg": "image",
+  ".pdf": "document",
+  ".doc": "document",
+  ".docx": "document",
+  ".mp4": "video",
+  ".webm": "video",
+  ".mov": "video",
+};
+
+const TYPE_FOLDER: Record<MediaItem["type"], string> = {
+  image: "images",
+  document: "documents",
+  video: "videos",
+};
+
+const TYPE_LABEL: Record<MediaItem["type"], string> = {
+  image: "image",
+  document: "document",
+  video: "vidéo",
+};
+
+// Taille maximale par type. Les images restent à 4 Mo (comportement actuel,
+// sous la limite de body des fonctions Vercel en laissant la marge de
+// l'encodage multipart) ; documents et vidéos acceptent des fichiers plus
+// lourds, plafonnés par serverActions.bodySizeLimit (voir next.config.ts).
+const MAX_BYTES: Record<MediaItem["type"], number> = {
+  image: 4 * 1024 * 1024,
+  document: 10 * 1024 * 1024,
+  video: 15 * 1024 * 1024,
+};
+
+const FORMAT_ERROR =
+  "Ce format de fichier n'est pas pris en charge (images : JPG, PNG, WEBP, GIF, AVIF, SVG — documents : PDF, DOC, DOCX — vidéos : MP4, WEBM, MOV).";
+
+function sizeError(type: MediaItem["type"]): string {
+  const mb = Math.round(MAX_BYTES[type] / (1024 * 1024));
+  return `Ce fichier dépasse la taille maximale autorisée (${mb} Mo pour une ${TYPE_LABEL[type]}).`;
+}
+
+function refreshMediaPage(): void {
+  revalidatePath("/admin/media");
+}
+
+export async function listMediaAction(): Promise<MediaItem[]> {
+  await requireAdminSession();
+  const content = await loadMediaContent();
+  return content.items;
+}
 
 export async function uploadMediaAction(
   formData: FormData,
@@ -36,15 +83,13 @@ export async function uploadMediaAction(
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, message: "Aucun fichier reçu." };
   }
-  if (file.size > MAX_UPLOAD_BYTES) {
-    return { ok: false, message: "Le fichier dépasse 4 Mo." };
-  }
   const extension = path.extname(file.name).toLowerCase();
-  if (!ALLOWED_EXTENSIONS.has(extension)) {
-    return {
-      ok: false,
-      message: "Format non pris en charge (JPG, PNG, WEBP, GIF, AVIF, SVG).",
-    };
+  const type = TYPE_BY_EXTENSION[extension];
+  if (!type) {
+    return { ok: false, message: FORMAT_ERROR };
+  }
+  if (file.size > MAX_BYTES[type]) {
+    return { ok: false, message: sizeError(type) };
   }
   try {
     const baseName = file.name
@@ -53,7 +98,8 @@ export async function uploadMediaAction(
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 60);
-    const fileName = `${Date.now()}-${baseName || "image"}${extension}`;
+    const folder = TYPE_FOLDER[type];
+    const fileName = `${folder}/${Date.now()}-${baseName || "media"}${extension}`;
     const contentType = file.type || "application/octet-stream";
     const uploaded = await getStorage().uploadObject(
       fileName,
@@ -64,24 +110,27 @@ export async function uploadMediaAction(
     const media: MediaItem = {
       id: crypto.randomUUID(),
       name: baseName || file.name,
-      type: "image",
+      type,
       size: uploaded.size,
       url: uploaded.url,
       createdAt: new Date().toISOString(),
       usage: [],
       custom: true,
+      path: uploaded.path,
+      mimeType: contentType,
     };
     const content = await loadMediaContent();
     content.items = [media, ...content.items];
     await saveMediaContent(content);
     await appendActivityLog("Média ajouté", media.name, "Enregistré");
+    refreshMediaPage();
     console.log(`[DEBUG] action uploadMediaAction OK (${uploaded.size} bytes)`);
     return { ok: true, media };
   } catch (error) {
     logStorageError("uploadMediaAction", error);
     return {
       ok: false,
-      message: safeStorageMessage(error, "L'import de l'image a échoué."),
+      message: safeStorageMessage(error, "L'import du média a échoué."),
     };
   }
 }
@@ -101,6 +150,7 @@ export async function addMediaAction(
     content.items = [media, ...content.items];
     await saveMediaContent(content);
     await appendActivityLog("Média ajouté", item.name, "Enregistré");
+    refreshMediaPage();
     console.log("[DEBUG] action addMediaAction OK");
     return { ok: true };
   } catch (error) {
@@ -114,14 +164,24 @@ export async function addMediaAction(
 
 export async function deleteMediaAction(item: MediaItem): Promise<SaveResult> {
   await requireAdminSession();
-  if (item.usage.length > 0 || knownImages.includes(item.url)) {
+  if (knownImages.includes(item.url)) {
     return {
       ok: false,
       message:
-        "Ce média est utilisé par le site public : il ne peut pas être supprimé.",
+        "Ce média est une image du site utilisée par les contenus par défaut : il ne peut pas être supprimé.",
     };
   }
   try {
+    const usage = await computeMediaUsage([item]);
+    const pages = [...new Set([...(usage[item.id] ?? []), ...item.usage])].map(
+      pageLabel,
+    );
+    if (pages.length > 0) {
+      return {
+        ok: false,
+        message: `Ce média est utilisé par le site public (${pages.join(", ")}) : il ne peut pas être supprimé.`,
+      };
+    }
     const content = await loadMediaContent();
     content.items = content.items.filter((current) => current.id !== item.id);
     await saveMediaContent(content);
@@ -134,6 +194,7 @@ export async function deleteMediaAction(item: MediaItem): Promise<SaveResult> {
     });
     }
     await appendActivityLog("Média supprimé", item.name, "Supprimé");
+    refreshMediaPage();
     console.log("[DEBUG] action deleteMediaAction OK");
     return { ok: true };
   } catch (error) {

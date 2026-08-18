@@ -6,12 +6,12 @@ export const site = {
   city: "Casablanca",
   whatsappUrl:
     "https://wa.me/33753192425?text=Bonjour%20Campus%20Way%2C%20je%20souhaite%20avoir%20des%20informations%20concernant%20mon%20projet%20d%27%C3%A9tudes%20au%20Maroc.",
-  phoneNumbers: ["+212 770737568", "+212 712524311"],
+  phoneNumbers: ["+212 7 70 73 75 68", "+212 7 12 52 43 11"],
   email: "campusway458@gmail.com",
   socials: {
-    instagram: "https://instagram.com/campusway.ma",
-    tiktok: "https://tiktok.com/@campusway.ma",
-    linkedin: "https://linkedin.com/company/campusway",
+    instagram: "https://instagram.com/campus_way_",
+    tiktok: "https://tiktok.com/@campus_way",
+    linkedin: "",
   },
 } as const;
 
@@ -26,9 +26,16 @@ export const navigation = [
 ] as const;
 
 export const footerNavigation = [
-  ...navigation,
-  { label: "À propos", href: "/a-propos" },
+  { label: "Étudier au Maroc", href: "/etudier-au-maroc" },
+  { label: "Écoles & Formations", href: "/ecoles-formations" },
+  { label: "Nos services", href: "/nos-services" },
+  { label: "Trouver mon école", href: "/trouver-mon-ecole" },
+  { label: "Logement & Installation", href: "/logement-installation" },
+  { label: "Témoignages", href: "/temoignages" },
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
+  { label: "Accueil", href: "/" },
+  { label: "À propos", href: "/a-propos" },
 ] as const;
 
 export const legalNavigation = [

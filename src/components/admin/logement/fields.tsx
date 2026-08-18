@@ -6,5 +6,5 @@ export {
   TextArea,
   TextInput,
   Toggle,
-  knownImages,
 } from "@/components/admin/ui/fields";
+export { knownImages } from "@/lib/known-images";

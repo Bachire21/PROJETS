@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Nos services",
   alternates: { canonical: "/nos-services" },
   description:
-    "Orientation, admission, logement, installation : découvrez l'accompagnement complet de Campus Way pour tes études au Maroc.",
+    "Orientation études au Maroc, admission, logement étudiant, accueil et installation : des services d'accompagnement pour les étudiants africains francophones.",
 };
 
 // La page relit le contenu géré par l'Admin à chaque requête :

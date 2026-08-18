@@ -126,7 +126,9 @@ export function DemandesManager({
       [request.needs.orientation, "Orientation"],
       [request.needs.admission, "Admission"],
       [request.needs.housing, "Logement"],
+      [request.needs.welcome ?? false, "Accueil"],
       [request.needs.installation, "Installation"],
+      [request.needs.administrative ?? false, "Admin"],
     ];
     return labels.filter(([active]) => active).map(([, label]) => label);
   };

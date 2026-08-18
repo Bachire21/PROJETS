@@ -1,9 +1,8 @@
 "use client";
 
 import type { StudentFormData } from "@/data/find-school";
-import { needs } from "@/data/find-school";
+import { needs, situationQuestions, yesNoOptions } from "@/data/find-school";
 import { SelectionCard } from "./SelectionCard";
-import { TextAreaField } from "./fields";
 import { iconMap } from "@/components/icons";
 
 type NeedsStepProps = {
@@ -50,15 +49,24 @@ export function NeedsStep({
         ) : null}
       </div>
 
-      <TextAreaField
-        id="message"
-        label="Message / informations complémentaires"
-        placeholder="Parle-nous de ton projet, de tes questions, de ta situation…"
-        rows={4}
-        value={data.message}
-        onChange={onChange("message")}
-        error={errors.message}
-      />
+      {situationQuestions.map((question) => (
+        <div key={question.key}>
+          <p className="text-secondary font-semibold text-navy-900">
+            {question.label}
+          </p>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:w-1/2">
+            {yesNoOptions.map((option) => (
+              <SelectionCard
+                key={option}
+                label={option}
+                compact
+                selected={data[question.key] === option}
+                onSelect={() => onChange(question.key)(option)}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

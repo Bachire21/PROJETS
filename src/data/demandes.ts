@@ -26,18 +26,27 @@ export type OrientationRequest = {
   whatsapp: string;
   email: string;
   diploma: string;
+  diplomaYear?: string;
   level: string;
   field: string;
+  desiredFormation?: string;
+  targetLevel?: string;
   city: string;
   budget: string;
+  housingBudget?: string;
   intake: string;
   needs: {
     orientation: boolean;
     admission: boolean;
     housing: boolean;
+    welcome?: boolean;
     installation: boolean;
+    administrative?: boolean;
   };
+  alreadyAdmitted?: boolean;
+  startedSteps?: boolean;
   message: string;
+  consent?: boolean;
   notes: { id: string; text: string; createdAt: string }[];
   createdAt: string;
   updatedAt: string;

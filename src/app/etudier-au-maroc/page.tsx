@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Étudier au Maroc",
   alternates: { canonical: "/etudier-au-maroc" },
   description:
-    "Pourquoi étudier au Maroc ? Formations, établissements, villes étudiantes : ce que Campus Way t'apporte pour ton projet d'études.",
+    "Étudier au Maroc pour les étudiants africains : formations variées, établissements privés, environnement francophone et villes étudiantes dynamiques comme Casablanca. Campus Way t'accompagne dans ton projet d'études au Maroc.",
 };
 
 // La page relit le contenu géré par l'Admin à chaque requête :

@@ -1,7 +1,12 @@
 "use client";
 
 import type { StudentFormData } from "@/data/find-school";
-import { desiredFields, educationLevels } from "@/data/find-school";
+import {
+  desiredFields,
+  diplomaYears,
+  educationLevels,
+  targetLevels,
+} from "@/data/find-school";
 import { Field, SelectField } from "./fields";
 import { SelectionCard } from "./SelectionCard";
 import { GraduationIcon } from "@/components/icons";
@@ -26,7 +31,7 @@ export function AcademicStep({
             *
           </span>
         </p>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {educationLevels.map((level) => (
             <SelectionCard
               key={level}
@@ -45,6 +50,16 @@ export function AcademicStep({
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
+        <SelectField
+          id="diplomaYear"
+          label="Année d'obtention"
+          required
+          icon={<GraduationIcon className="h-4.5 w-4.5" />}
+          value={data.diplomaYear}
+          onChange={onChange("diplomaYear")}
+          options={diplomaYears}
+          error={errors.diplomaYear}
+        />
         <Field
           id="diploma"
           label="Diplôme (en cours ou obtenu)"
@@ -64,7 +79,27 @@ export function AcademicStep({
           options={desiredFields}
           error={errors.desiredField}
         />
+        <SelectField
+          id="targetLevel"
+          label="Niveau de formation recherché"
+          required
+          icon={<GraduationIcon className="h-4.5 w-4.5" />}
+          value={data.targetLevel}
+          onChange={onChange("targetLevel")}
+          options={targetLevels}
+          error={errors.targetLevel}
+        />
       </div>
+
+      <Field
+        id="desiredFormation"
+        label="Formation souhaitée"
+        placeholder="Ex. : école de commerce, école d'ingénieurs, faculté…"
+        value={data.desiredFormation}
+        onChange={onChange("desiredFormation")}
+        error={errors.desiredFormation}
+        valid={Boolean(data.desiredFormation.trim())}
+      />
     </div>
   );
 }

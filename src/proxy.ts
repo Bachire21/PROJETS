@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
   sessionCookieName,
+  sessionEmailFromToken,
   verifySessionToken,
   createSessionToken,
 } from "@/lib/auth";
@@ -59,8 +60,14 @@ export function proxy(request: NextRequest) {
   // Session glissante : chaque requête admin valide repousse l'expiration
   // du cookie à +7 jours. Une session active ne peut plus expirer en plein
   // travail ; elle ne part qu'après 7 jours d'inactivité.
+  const sessionEmail = sessionEmailFromToken(token);
+  if (!sessionEmail) return actionSessionExpired();
   const response = NextResponse.next();
-  response.cookies.set(sessionCookieName, createSessionToken(), COOKIE_OPTIONS);
+  response.cookies.set(
+    sessionCookieName,
+    createSessionToken(sessionEmail),
+    COOKIE_OPTIONS,
+  );
   return response;
 }
 

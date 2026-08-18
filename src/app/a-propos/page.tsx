@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/a-propos/Hero";
 import { Identity } from "@/components/a-propos/Identity";
+import { Vision } from "@/components/a-propos/Vision";
 import { Steps } from "@/components/a-propos/Steps";
 import { FinalCta } from "@/components/a-propos/FinalCta";
 
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   title: "À propos",
   alternates: { canonical: "/a-propos" },
   description:
-    "Campus Way est une agence d'orientation et d'accompagnement pour les étudiants africains francophones qui souhaitent poursuivre leurs études au Maroc.",
+    "Campus Way accompagne les étudiants africains francophones dans leur projet d'études au Maroc : orientation, information et accompagnement de proximité, de la réflexion à l'installation.",
 };
 
 export default function AProposPage() {
@@ -17,6 +18,7 @@ export default function AProposPage() {
     <>
       <Hero />
       <Identity />
+      <Vision />
       <Steps />
       <FinalCta />
     </>

@@ -17,6 +17,7 @@ import { PersonalInfoStep } from "./PersonalInfoStep";
 import { AcademicStep } from "./AcademicStep";
 import { ProjectStep } from "./ProjectStep";
 import { NeedsStep } from "./NeedsStep";
+import { FinalStep } from "./FinalStep";
 import { SuccessState } from "./SuccessState";
 import { CheckIcon } from "@/components/icons";
 
@@ -47,17 +48,24 @@ function validateStep(
 
   if (step === 1) {
     if (!data.educationLevel) errors.educationLevel = "Ce champ est obligatoire.";
+    if (!data.diplomaYear) errors.diplomaYear = "Ce champ est obligatoire.";
     if (!data.desiredField) errors.desiredField = "Ce champ est obligatoire.";
+    if (!data.targetLevel) errors.targetLevel = "Ce champ est obligatoire.";
   }
 
   if (step === 2) {
     if (!data.desiredCity) errors.desiredCity = "Ce champ est obligatoire.";
     if (!data.budget) errors.budget = "Ce champ est obligatoire.";
+    if (!data.housingBudget) errors.housingBudget = "Ce champ est obligatoire.";
     if (!data.intake) errors.intake = "Ce champ est obligatoire.";
   }
 
   if (step === 3 && data.needs.length === 0) {
     errors.needs = "Sélectionne au moins un besoin.";
+  }
+
+  if (step === 4 && data.consent !== "accepted") {
+    errors.consent = "Merci de cocher cette case pour valider l'envoi de ta demande.";
   }
 
   return errors;
@@ -205,6 +213,13 @@ export function FindSchoolForm() {
                       data={data}
                       onChange={setField}
                       onToggleNeed={toggleNeed}
+                      errors={errors}
+                    />
+                  ) : null}
+                  {step === 4 ? (
+                    <FinalStep
+                      data={data}
+                      onChange={setField}
                       errors={errors}
                     />
                   ) : null}

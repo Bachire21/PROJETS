@@ -1,6 +1,7 @@
 export type UploadedObject = {
   url: string;
   size: number;
+  path: string;
 };
 
 export interface StorageProvider {

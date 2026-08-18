@@ -30,6 +30,7 @@ export type ServicesPageData = {
     eyebrow: string;
     title: string;
     services: Service[];
+    note?: string;
     published: boolean;
   };
   parcours: {
@@ -141,6 +142,7 @@ export const servicesPage: ServicesPageData = {
         published: true,
       },
     ],
+    note: "Les services peuvent être proposés séparément ou dans des formules d'accompagnement adaptées au parcours de l'étudiant.",
     published: true,
   },
 
@@ -179,7 +181,7 @@ export const servicesPage: ServicesPageData = {
     eyebrow: "Ton projet commence ici",
     title: "Ton projet commence ici.",
     description: "Parle-nous de ton projet d'études au Maroc.",
-    primaryButton: { label: "Trouver mon école", href: "/trouver-mon-ecole" },
+    primaryButton: { label: "Choisir mon accompagnement", href: "/trouver-mon-ecole" },
     secondaryButton: { label: "Parler à Campus Way" },
     published: true,
   },

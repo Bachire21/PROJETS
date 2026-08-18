@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "Logement & Installation au Maroc | Campus Way",
   alternates: { canonical: "/logement-installation" },
   description:
-    "Prépare ton installation au Maroc : logement, zones, arrivée et premières démarches. Campus Way t'accompagne dans la préparation de ton arrivée.",
+    "Prépare ton installation au Maroc : logement étudiant à Casablanca, zones autour du campus, arrivée et premières démarches. Campus Way t'accompagne.",
 };
 
 // La page relit le contenu géré par l'Admin à chaque requête :

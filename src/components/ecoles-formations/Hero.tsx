@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { InfoIcon } from "@/components/icons";
 
 export function Hero() {
   return (
@@ -44,6 +45,15 @@ export function Hero() {
               Découvre les établissements et les formations vers lesquels
               Campus Way peut t&apos;orienter.
             </p>
+            <div className="mt-6 flex items-start gap-3 rounded-2xl bg-cream p-4 ring-1 ring-navy-100">
+              <InfoIcon className="mt-0.5 h-5 w-5 shrink-0 text-magenta-500" />
+              <p className="text-secondary leading-relaxed text-navy-700/75">
+                Les informations présentées sont destinées à faciliter la
+                comparaison et la prise de contact. Vérifie toujours les
+                conditions d&apos;admission et de frais directement auprès de
+                l&apos;établissement.
+              </p>
+            </div>
             <div className="mt-10 flex flex-wrap gap-4">
               <Button
                 href="#catalogue"

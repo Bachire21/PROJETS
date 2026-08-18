@@ -34,14 +34,14 @@ export type TemoignagesPageData = {
 export const temoignagesPage: TemoignagesPageData = {
   hero: {
     eyebrow: "Témoignages",
-    title: "Les expèriences de ceux qui ont avancé avec Campus Way.",
+    title: "Ils ont fait le chemin avec Campus Way.",
     description:
-      "Découvre prochainement les expèriences réelles des étudiants accompagnés par Campus Way.",
+      "Découvre les parcours d'étudiants accompagnés par Campus Way — de la candidature à l'installation au Maroc.",
   },
 
   emptyState: {
     description:
-      "Les témoignages des étudiants accompagnés par Campus Way seront publiés ici.",
+      "Bientôt, les parcours de nos premiers étudiants accompagnés.",
   },
 
   cta: {

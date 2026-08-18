@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Trouver mon école",
   alternates: { canonical: "/trouver-mon-ecole" },
   description:
-    "Raconte-nous ton profil et ton projet : Campus Way t'aide à trouver l'école et la formation qui te correspondent au Maroc.",
+    "Inscription école au Maroc pour étudiant étranger : indique ton profil et ton projet, Campus Way t'oriente vers les écoles et formations adaptées.",
 };
 
 export default function TrouverMonEcolePage() {

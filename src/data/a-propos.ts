@@ -5,14 +5,21 @@ export const aProposPage = {
   hero: {
     eyebrow: "À propos",
     title: site.tagline,
-    description: site.description,
+    description:
+      "Campus Way est née d'une réalité simple : de nombreux jeunes africains souhaitent étudier au Maroc, mais se retrouvent face à des informations dispersées, des choix d'écoles difficiles à comparer et des démarches parfois complexes à préparer depuis l'étranger. La marque transforme cette demande en un service structuré d'orientation, d'information et d'accompagnement.",
   },
   identity: {
-    eyebrow: "Qui sommes-nous ?",
-    title: "Une agence d'orientation et d'accompagnement.",
+    eyebrow: "L'identité Campus Way",
+    title: "L'identité Campus Way",
     description:
-      "Campus Way t'aide à avancer étape par étape, de ton orientation à ton installation. Notre mission : que ton projet d'études au Maroc devienne une réalité, avec des informations claires et un accompagnement humain.",
+      "Campus Way s'appuie sur une communauté digitale de plus de 50 000 abonnés et développe des contenus pratiques pour informer, orienter et rassurer les étudiants africains francophones. La marque associe information, orientation et accompagnement pratique afin de proposer une expérience cohérente, depuis la réflexion sur le projet d'études jusqu'aux premières étapes d'installation au Maroc. Campus Way a pour ambition de devenir un interlocuteur de confiance pour les étudiants africains francophones qui souhaitent construire leur parcours d'études au Maroc.",
     strengths: servicesPage.strengths,
+  },
+  vision: {
+    eyebrow: "Notre vision",
+    title: "Notre vision",
+    description:
+      "Devenir une référence de confiance pour les étudiants africains francophones qui choisissent le Maroc comme destination d'études.",
   },
   steps: {
     eyebrow: "Notre accompagnement",

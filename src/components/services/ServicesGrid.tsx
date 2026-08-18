@@ -140,6 +140,14 @@ export function ServicesGrid({
             </Reveal>
           ))}
         </div>
+
+        {servicesSection.note ? (
+          <Reveal>
+            <p className="mx-auto mt-10 max-w-2xl text-center text-secondary leading-relaxed text-navy-700/60">
+              {servicesSection.note}
+            </p>
+          </Reveal>
+        ) : null}
       </Container>
     </section>
   );

@@ -10,7 +10,7 @@
     "reassurance": "TEST — CONTENU PUBLIÉ DEPUIS ADMIN",
     "image": {
       "id": "91f8b8f6-f303-4940-8ba3-596999371ea9",
-      "src": "https://cwutbjeatfopiuhggres.supabase.co/storage/v1/object/public/uploads/1786796271562-hero.webp",
+      "src": "/images/etudier-hero.jpg",
       "alt": "Deux jeunes personnes marchant sous des arches marocaines ornées de motifs"
     },
     "cards": [],

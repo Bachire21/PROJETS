@@ -5,13 +5,20 @@ export type StudentFormData = {
   whatsapp: string;
   email: string;
   educationLevel: string;
+  diplomaYear: string;
   diploma: string;
   desiredField: string;
+  desiredFormation: string;
+  targetLevel: string;
   desiredCity: string;
   budget: string;
+  housingBudget: string;
   intake: string;
   needs: string[];
+  alreadyAdmitted: string;
+  startedSteps: string;
   message: string;
+  consent: string;
 };
 
 export const initialFormData: StudentFormData = {
@@ -21,13 +28,20 @@ export const initialFormData: StudentFormData = {
   whatsapp: "",
   email: "",
   educationLevel: "",
+  diplomaYear: "",
   diploma: "",
   desiredField: "",
+  desiredFormation: "",
+  targetLevel: "",
   desiredCity: "",
   budget: "",
+  housingBudget: "",
   intake: "",
   needs: [],
+  alreadyAdmitted: "",
+  startedSteps: "",
   message: "",
+  consent: "",
 };
 
 export const hero = {
@@ -63,7 +77,7 @@ export const steps = [
     number: "02",
     title: "Ton parcours",
     subtitle: "Parle-nous de ton parcours académique.",
-    hint: "Indique ton niveau actuel et la filière qui t'intéresse.",
+    hint: "Indique ton niveau actuel, ton diplôme et la filière qui t'intéresse.",
     sideLabel: "Ton parcours",
   },
   {
@@ -80,9 +94,40 @@ export const steps = [
     hint: "Tu peux sélectionner plusieurs besoins.",
     sideLabel: "Ton accompagnement",
   },
+  {
+    number: "05",
+    title: "Finalisation",
+    subtitle: "Une dernière étape, puis on s'occupe de la suite.",
+    hint: "Ajoute ce que tu veux nous dire et valide ta demande.",
+    sideLabel: "Finalisation",
+  },
 ] as const;
 
-export const educationLevels = ["Bac", "Bac +2", "Bac +3", "Master"] as const;
+export const educationLevels = [
+  "Bac",
+  "Bac +1",
+  "Bac +2",
+  "Bac +3",
+  "Bac +4",
+  "Master",
+] as const;
+
+export const diplomaYears = [
+  "Avant 2021",
+  "2021",
+  "2022",
+  "2023",
+  "2024",
+  "2025",
+  "2026",
+] as const;
+
+export const targetLevels = [
+  "Licence",
+  "Master",
+  "Ingénieur",
+  "Autre niveau",
+] as const;
 
 export const countries = [
   "Côte d'Ivoire",
@@ -164,10 +209,35 @@ export const needs = [
     icon: "bed",
   },
   {
+    id: "accueil",
+    title: "Accueil",
+    description: "Être accueilli(e) à l'arrivée",
+    icon: "building",
+  },
+  {
     id: "installation",
     title: "Installation",
     description: "Organiser mon arrivée",
     icon: "flag",
+  },
+  {
+    id: "administratif",
+    title: "Accompagnement administratif",
+    description: "Être guidé(e) dans les démarches",
+    icon: "shield",
+  },
+] as const;
+
+export const yesNoOptions = ["Oui", "Non"] as const;
+
+export const situationQuestions = [
+  {
+    key: "alreadyAdmitted",
+    label: "Es-tu déjà admis(e) dans un établissement au Maroc ?",
+  },
+  {
+    key: "startedSteps",
+    label: "As-tu déjà commencé des démarches ?",
   },
 ] as const;
 
@@ -188,9 +258,15 @@ export const sidePanel = {
 };
 
 export const successMessages = {
-  titlePrefix: "Ton projet est prêt,",
-  description:
-    "Merci pour ces informations. Elles serviront à préparer ton orientation personnalisée.",
+  titlePrefix: "Merci !",
+  description: "Nous avons bien reçu ta demande.",
   pendingNote:
-    "Ta demande a bien été enregistrée : elle sera traitée par un conseiller Campus Way qui te contactera sur WhatsApp ou par e-mail.",
+    "L'équipe Campus Way reviendra vers toi pour la suite.",
+};
+
+export const consent = {
+  label:
+    "J'accepte que mes informations soient utilisées par Campus Way afin d'être recontacté(e) dans le cadre de mon projet d'études au Maroc. Les données collectées ne sont pas partagées avec des tiers.",
+  requiredMessage: "Merci de cocher cette case pour valider l'envoi de ta demande.",
+  privacyHref: "/politique-de-confidentialite",
 };

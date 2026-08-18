@@ -4,6 +4,8 @@ import { Container } from "@/components/ui/Container";
 export const metadata: Metadata = {
   title: "Conditions générales",
   alternates: { canonical: "/conditions-generales" },
+  description:
+    "Conditions générales d'utilisation des services Campus Way : présentation de l'accompagnement et conditions de prise en charge.",
 };
 
 export default function ConditionsGeneralesPage() {

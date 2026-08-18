@@ -19,7 +19,7 @@ export async function loginAction(
 
   try {
     const store = await cookies();
-    store.set(sessionCookieName, createSessionToken(), {
+    store.set(sessionCookieName, createSessionToken(email), {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",

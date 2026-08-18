@@ -4,6 +4,8 @@ import { Container } from "@/components/ui/Container";
 export const metadata: Metadata = {
   title: "Mentions légales",
   alternates: { canonical: "/mentions-legales" },
+  description:
+    "Mentions légales du site Campus Way : éditeur, hébergement et conditions d'utilisation du site.",
 };
 
 export default function MentionsLegalesPage() {

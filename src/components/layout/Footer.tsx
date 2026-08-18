@@ -20,7 +20,7 @@ const socialLinks = [
   { label: "Instagram", href: site.socials.instagram, icon: InstagramIcon },
   { label: "TikTok", href: site.socials.tiktok, icon: TikTokIcon },
   { label: "LinkedIn", href: site.socials.linkedin, icon: LinkedInIcon },
-];
+].filter(({ href }) => href);
 
 export function Footer() {
   const currentYear = new Date().getFullYear();

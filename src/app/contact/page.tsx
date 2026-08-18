@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Contact",
   alternates: { canonical: "/contact" },
   description:
-    "Contacte Campus Way à Casablanca : WhatsApp au +33 7 53 19 24 25, email campusway458@gmail.com ou téléphone au +212 770 737 568 / +212 712 524 311.",
+    "Contacte Campus Way à Casablanca : WhatsApp au +33 7 53 19 24 25, email campusway458@gmail.com ou téléphone au +212 7 70 73 75 68 / +212 7 12 52 43 11.",
 };
 
 export default function ContactPage() {

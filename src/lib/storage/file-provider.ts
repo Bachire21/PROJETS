@@ -33,15 +33,16 @@ export const fileProvider: StorageProvider = {
     buffer: Buffer,
   ): Promise<UploadedObject> {
     const start = Date.now();
-    await fs.mkdir(uploadsDir, { recursive: true });
-    await fs.writeFile(path.join(uploadsDir, fileName), buffer);
+    const filePath = path.join(uploadsDir, fileName);
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, buffer);
     console.log(`[DEBUG] file uploadObject "${fileName}" -> ${buffer.length} bytes in ${Date.now() - start}ms`);
-    return { url: `/uploads/${fileName}`, size: buffer.length };
+    return { url: `/uploads/${fileName}`, size: buffer.length, path: fileName };
   },
 
   async deleteObject(url: string): Promise<void> {
     if (!url.startsWith("/uploads/")) return;
-    const fileName = path.basename(url);
+    const fileName = url.slice("/uploads/".length);
     const start = Date.now();
     await fs.unlink(path.join(uploadsDir, fileName)).catch((error) => {
       console.log(`[DEBUG] file deleteObject "${fileName}" ERROR: ${(error as Error).message}`);

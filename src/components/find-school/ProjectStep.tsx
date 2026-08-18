@@ -73,6 +73,26 @@ export function ProjectStep({ data, onChange, errors }: ProjectStepProps) {
       </div>
 
       <div>
+        <GroupLabel label="Budget logement mensuel" required />
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {budgets.map((budget) => (
+            <SelectionCard
+              key={budget.value}
+              label={budget.label}
+              description={budget.description}
+              selected={data.housingBudget === budget.value}
+              onSelect={() => onChange("housingBudget")(budget.value)}
+            />
+          ))}
+        </div>
+        {errors.housingBudget ? (
+          <p role="alert" className="mt-2 text-small text-orange-600">
+            {errors.housingBudget}
+          </p>
+        ) : null}
+      </div>
+
+      <div>
         <GroupLabel label="Rentrée souhaitée" required />
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {intakes.map((intake) => (

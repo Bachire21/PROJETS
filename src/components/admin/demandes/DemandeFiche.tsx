@@ -57,7 +57,9 @@ const needLabels: { key: keyof OrientationRequest["needs"]; label: string }[] = 
   { key: "orientation", label: "Orientation" },
   { key: "admission", label: "Admission" },
   { key: "housing", label: "Logement" },
+  { key: "welcome", label: "Accueil" },
   { key: "installation", label: "Installation" },
+  { key: "administrative", label: "Accompagnement administratif" },
 ];
 
 export function DemandeFiche({
@@ -220,14 +222,41 @@ export function DemandeFiche({
 
         <InfoBlock title="Parcours">
           <InfoLine label="Diplôme" value={request.diploma} />
+          <InfoLine label="Année d'obtention" value={request.diplomaYear ?? ""} />
           <InfoLine label="Niveau" value={request.level} />
           <InfoLine label="Filière souhaitée" value={request.field} />
+          <InfoLine
+            label="Formation souhaitée"
+            value={request.desiredFormation ?? ""}
+          />
+          <InfoLine label="Niveau recherché" value={request.targetLevel ?? ""} />
         </InfoBlock>
 
         <InfoBlock title="Projet">
           <InfoLine label="Ville" value={request.city} />
           <InfoLine label="Budget" value={request.budget} />
+          <InfoLine label="Budget logement" value={request.housingBudget ?? ""} />
           <InfoLine label="Rentrée" value={request.intake} />
+          <InfoLine
+            label="Déjà admis(e)"
+            value={
+              request.alreadyAdmitted === undefined
+                ? ""
+                : request.alreadyAdmitted
+                  ? "Oui"
+                  : "Non"
+            }
+          />
+          <InfoLine
+            label="Démarches commencées"
+            value={
+              request.startedSteps === undefined
+                ? ""
+                : request.startedSteps
+                  ? "Oui"
+                  : "Non"
+            }
+          />
         </InfoBlock>
 
         <InfoBlock title="Besoins">

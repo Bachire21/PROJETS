@@ -1,9 +1,9 @@
 export const contactPage = {
   hero: {
     eyebrow: "Contact",
-    title: "On t'écoute, où que tu sois.",
+    title: "Parlons de ton projet.",
     description:
-      "Une question sur une école, un dossier, un logement ? Écris-nous : on répond rapidement, en toute simplicité.",
+      "Tu veux étudier au Maroc, mais tu ne sais pas encore quelle école ou quelle formation choisir ? Écris-nous. Nous commencerons par comprendre ton projet.",
   },
   methods: {
     eyebrow: "Coordonnées",

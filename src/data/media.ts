@@ -7,6 +7,8 @@ export type MediaItem = {
   createdAt: string;
   usage: string[];
   custom: boolean;
+  path?: string;
+  mimeType?: string;
 };
 
 export const seedMediaItems: MediaItem[] = [];

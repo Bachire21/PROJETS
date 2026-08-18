@@ -32,11 +32,11 @@ export const homeHero = {
   titleHighlight: "commence ici.",
   description:
     "Campus Way t'accompagne dans le choix de ta formation, ton admission et les étapes essentielles de ton arrivée au Maroc.",
-  primaryCta: { label: "Trouver mon école", href: "/trouver-mon-ecole" },
+  primaryCta: { label: "Trouver ma formation", href: "/trouver-mon-ecole" },
   secondaryCta: { label: "Découvrir Campus Way", href: "/a-propos" },
   image: {
     src: "/images/hero-accueil.jpg",
-    alt: "Campus Way — votre accompagnement pour étudier au Maroc",
+    alt: "Campus Way — ton accompagnement pour étudier au Maroc",
   },
   card: {
     icon: "🎓",
@@ -79,7 +79,7 @@ export const journeySteps: JourneyStep[] = [
 
 export const whySection = {
   eyebrow: "Pourquoi Campus Way",
-  title: "Un accompagnement pensé pour ton parcours.",
+  title: "Pourquoi Campus Way ?",
   description:
     "Étudier dans un autre pays ne devrait pas commencer par des informations dispersées et des démarches incompréhensibles. Campus Way réunit orientation, admission et accompagnement autour d'un même parcours.",
   blocks: [
@@ -117,7 +117,7 @@ export const whySection = {
 
 export const missionSection = {
   eyebrow: "Notre mission",
-  title: "Faciliter l'accès à l'enseignement supérieur au Maroc.",
+  title: "Notre mission",
   description:
     "Notre mission est de faciliter l'accès des étudiants africains francophones à l'enseignement supérieur au Maroc en leur donnant une information claire, une orientation pertinente et un accompagnement de proximité.",
   cta: { label: "Découvrir Campus Way", href: "/a-propos" },
@@ -135,7 +135,7 @@ export const servicesSection: {
   allCta: { label: string; href: string };
 } = {
   eyebrow: "Nos services",
-  title: "Des services pensés pour chaque étape du parcours.",
+  title: "Nos services",
   services: [
     {
       number: "01",
@@ -197,6 +197,6 @@ export const finalCta = {
   title: "Prêt à commencer ton parcours ?",
   description:
     "Parle-nous de ton projet d'études et découvre les possibilités qui correspondent à ton profil.",
-  primaryCta: { label: "Trouver mon école", href: "/trouver-mon-ecole" },
+  primaryCta: { label: "Trouver ma formation", href: "/trouver-mon-ecole" },
   secondaryCta: { label: "Parler à Campus Way" },
 };

@@ -1,5 +1,10 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 import Image from "next/image";
+import { ImageIcon } from "@/components/icons";
+import { knownImages } from "@/lib/known-images";
+import { MediaPickerModal } from "@/components/admin/media/MediaPickerModal";
 
 export function Field({
   label,
@@ -132,18 +137,6 @@ export function StatusChip({ published }: { published: boolean }) {
   );
 }
 
-export const knownImages = [
-  "/images/accueil.jpg",
-  "/images/logement-hero.jpg",
-  "/images/logement-visuel.jpg",
-  "/images/catalogue-hero.jpg",
-  "/images/etudier-hero.jpg",
-  "/images/etudier-visuel.jpg",
-  "/images/find-school-hero.jpg",
-  "/images/hero-accueil.jpg",
-  "/images/students.jpg",
-];
-
 export function ImageField({
   url,
   alt,
@@ -155,6 +148,8 @@ export function ImageField({
   onChangeUrl: (value: string) => void;
   onChangeAlt: (value: string) => void;
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+
   return (
     <div className="grid gap-4 sm:grid-cols-[10rem_1fr]">
       <div>
@@ -190,6 +185,19 @@ export function ImageField({
             ))}
           </datalist>
         </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            className="inline-flex h-9 items-center gap-2 rounded-full bg-navy-900 px-4 text-xs font-bold text-white transition-colors hover:bg-magenta-500"
+          >
+            <ImageIcon className="h-3.5 w-3.5" />
+            Choisir dans la médiathèque
+          </button>
+          <span className="text-xs text-navy-500">
+            ou saisis un chemin manuellement.
+          </span>
+        </div>
         <input
           type="text"
           value={alt}
@@ -198,6 +206,18 @@ export function ImageField({
           className={inputClasses}
         />
       </div>
+
+      {pickerOpen ? (
+        <MediaPickerModal
+          onClose={() => setPickerOpen(false)}
+          onSelect={(item) => {
+            onChangeUrl(item.url);
+          }}
+          title="Médiathèque"
+          description="Sélectionnez une image du site."
+          filter="image"
+        />
+      ) : null}
     </div>
   );
 }

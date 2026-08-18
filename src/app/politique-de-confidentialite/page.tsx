@@ -4,6 +4,8 @@ import { Container } from "@/components/ui/Container";
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
   alternates: { canonical: "/politique-de-confidentialite" },
+  description:
+    "Politique de confidentialité de Campus Way : collecte, utilisation et protection de tes données personnelles.",
 };
 
 export default function PolitiqueConfidentialitePage() {

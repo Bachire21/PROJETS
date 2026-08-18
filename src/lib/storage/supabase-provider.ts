@@ -92,7 +92,7 @@ export const supabaseProvider: StorageProvider = {
       .storage.from(supabaseBucket())
       .getPublicUrl(fileName);
     console.log(`[DEBUG] supabase uploadObject "${fileName}" -> ${buffer.length} bytes in ${Date.now() - start}ms`);
-    return { url: data.publicUrl, size: buffer.length };
+    return { url: data.publicUrl, size: buffer.length, path: fileName };
   },
 
   async deleteObject(url: string): Promise<void> {
