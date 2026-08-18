@@ -24,7 +24,7 @@ export async function loginAction(
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 12 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60,
     });
   } catch (error) {
     console.error("loginAction : création de session impossible.", error);

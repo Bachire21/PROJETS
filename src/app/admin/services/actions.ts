@@ -6,6 +6,7 @@ import {
 } from "@/lib/content-store";
 import type { ServicesPageData } from "@/data/services";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -13,6 +14,7 @@ export async function saveServicesContentAction(
   content: ServicesPageData,
   activityNote?: string,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     await saveServicesContent(content);
     await appendActivityLog(

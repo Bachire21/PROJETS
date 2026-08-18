@@ -10,6 +10,7 @@ import type { MediaItem } from "@/data/media";
 import { knownImages } from "@/components/admin/ui/fields";
 import { getStorage, isSupabaseUrl } from "@/lib/storage";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -30,6 +31,7 @@ const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 export async function uploadMediaAction(
   formData: FormData,
 ): Promise<SaveResult & { media?: MediaItem }> {
+  await requireAdminSession();
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, message: "Aucun fichier reçu." };
@@ -87,6 +89,7 @@ export async function uploadMediaAction(
 export async function addMediaAction(
   item: Omit<MediaItem, "id" | "createdAt" | "custom">,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadMediaContent();
     const media: MediaItem = {
@@ -110,6 +113,7 @@ export async function addMediaAction(
 }
 
 export async function deleteMediaAction(item: MediaItem): Promise<SaveResult> {
+  await requireAdminSession();
   if (item.usage.length > 0 || knownImages.includes(item.url)) {
     return {
       ok: false,

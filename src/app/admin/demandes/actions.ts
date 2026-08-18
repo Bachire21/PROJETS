@@ -8,6 +8,7 @@ import {
 import type { OrientationRequestStatus } from "@/data/demandes";
 import { orientationRequestStatuses } from "@/data/demandes";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -15,6 +16,7 @@ export async function updateRequestStatusAction(
   id: string,
   status: OrientationRequestStatus,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadDemandesContent();
     const request = content.requests.find((current) => current.id === id);
@@ -50,6 +52,7 @@ export async function addRequestNoteAction(
   id: string,
   text: string,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   const trimmed = text.trim();
   if (!trimmed) {
     return { ok: false, message: "La note est vide." };

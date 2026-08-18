@@ -6,12 +6,14 @@ import {
 } from "@/lib/content-store";
 import type { SiteSettings } from "@/data/settings";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
 export async function saveSettingsContentAction(
   content: SiteSettings,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     await saveSettingsContent(content);
     await appendActivityLog(

@@ -9,7 +9,7 @@ const ADMIN_CODE_HASH = process.env.CW_ADMIN_CODE_HASH;
 
 const SESSION_SECRET = process.env.CW_ADMIN_SESSION_SECRET;
 const SESSION_COOKIE = "cw_admin_session";
-const SESSION_DURATION_MS = 12 * 60 * 60 * 1000;
+const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 
 function verifyCode(code: string): boolean {
   if (!ADMIN_CODE_HASH || !ADMIN_CODE_SALT) return false;

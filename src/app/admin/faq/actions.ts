@@ -8,6 +8,7 @@ import {
 import type { FaqContent } from "@/lib/content-store";
 import type { FAQItem } from "@/data/faq";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -15,6 +16,7 @@ export async function saveFaqContentAction(
   content: FaqContent,
   activityNote?: string,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     await saveFaqContent(content);
     const note = activityNote ?? "FAQ enregistrée";
@@ -34,6 +36,7 @@ export async function publishFaqAction(
   item: FAQItem,
   published: boolean,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadFaqContent();
     content.faqItems = content.faqItems.map((current) =>
@@ -57,6 +60,7 @@ export async function publishFaqAction(
 }
 
 export async function deleteFaqAction(item: FAQItem): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadFaqContent();
     content.faqItems = content.faqItems.filter(

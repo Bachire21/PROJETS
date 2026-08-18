@@ -8,6 +8,7 @@ import {
 import type { TemoignagesContent } from "@/lib/content-store";
 import type { Testimonial } from "@/data/temoignages";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -15,6 +16,7 @@ export async function saveTemoignagesContentAction(
   content: TemoignagesContent,
   activityNote?: string,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     await saveTemoignagesContent(content);
     await appendActivityLog(
@@ -37,6 +39,7 @@ export async function publishTestimonialAction(
   item: Testimonial,
   published: boolean,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadTemoignagesContent();
     content.testimonials = content.testimonials.map((current) =>
@@ -62,6 +65,7 @@ export async function publishTestimonialAction(
 export async function deleteTestimonialAction(
   item: Testimonial,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadTemoignagesContent();
     content.testimonials = content.testimonials.filter(

@@ -8,6 +8,7 @@ import {
 import type { EcolesContent } from "@/lib/content-store";
 import type { Establishment, Formation } from "@/data/ecoles-formations";
 import { logStorageError, safeStorageMessage } from "@/lib/storage/errors";
+import { requireAdminSession } from "@/lib/require-admin";
 
 export type SaveResult = { ok: boolean; message?: string };
 
@@ -15,6 +16,7 @@ export async function saveEcolesContentAction(
   content: EcolesContent,
   activityNote?: string,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     await saveEcolesContent(content);
     await appendActivityLog(
@@ -37,6 +39,7 @@ export async function publishEstablishmentAction(
   item: Establishment,
   published: boolean,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadEcolesContent();
     content.establishments = content.establishments.map((current) =>
@@ -62,6 +65,7 @@ export async function publishEstablishmentAction(
 export async function deleteEstablishmentAction(
   item: Establishment,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadEcolesContent();
     content.establishments = content.establishments.filter(
@@ -84,6 +88,7 @@ export async function publishFormationAction(
   item: Formation,
   published: boolean,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadEcolesContent();
     content.formations = content.formations.map((current) =>
@@ -109,6 +114,7 @@ export async function publishFormationAction(
 export async function deleteFormationAction(
   item: Formation,
 ): Promise<SaveResult> {
+  await requireAdminSession();
   try {
     const content = await loadEcolesContent();
     content.formations = content.formations.filter(
