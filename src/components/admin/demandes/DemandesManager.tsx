@@ -8,9 +8,14 @@ import { AdminPageHeader } from "@/components/admin/ui/PageHeader";
 import { AdminSearch } from "@/components/admin/ui/Search";
 import { AdminEmptyState } from "@/components/admin/ui/EmptyState";
 import { SelectInput } from "@/components/admin/ui/fields";
+import { deleteRequestAction } from "@/app/admin/demandes/actions";
+import { actionErrorMessage } from "@/lib/client-action-error";
+import { ConfirmDialog } from "@/components/admin/ui/ConfirmDialog";
+import { Toast, type ToastData } from "@/components/admin/ui/Toast";
 import {
   ArrowRightIcon,
   MapPinIcon,
+  TrashIcon,
   WhatsAppIcon,
   MailIcon,
 } from "@/components/icons";
@@ -75,6 +80,38 @@ export function DemandesManager({
   const [statusFilter, setStatusFilter] = useState("Tous");
   const [dateFilter, setDateFilter] = useState("Toutes");
   const [dateThreshold, setDateThreshold] = useState(0);
+  const [deletingTarget, setDeletingTarget] = useState<OrientationRequest | null>(null);
+  const [toast, setToast] = useState<ToastData>(null);
+  const [requests, setRequests] = useState(initialContent.requests);
+
+  const notify = (message: string, kind: "success" | "error" = "success") =>
+    setToast({ kind, message });
+
+  const confirmDelete = async () => {
+    if (!deletingTarget) return;
+    try {
+      const result = await deleteRequestAction(deletingTarget.id);
+      if (result.ok) {
+        setRequests((current) =>
+          current.filter((item) => item.id !== deletingTarget.id),
+        );
+        notify(`Demande ${deletingTarget.number} déplacée vers la corbeille.`);
+      } else {
+        notify(result.message ?? "La suppression a échoué.", "error");
+      }
+    } catch (error) {
+      console.error("confirmDelete : la Server Action a rejeté la requête.", error);
+      notify(
+        actionErrorMessage(
+          error,
+          "La suppression n'a pas abouti (réseau ou serveur indisponible). Réessaie.",
+        ),
+        "error",
+      );
+    } finally {
+      setDeletingTarget(null);
+    }
+  };
 
   const changeDateFilter = (value: string) => {
     setDateFilter(value);
@@ -92,13 +129,13 @@ export function DemandesManager({
 
   const items = useMemo(
     () =>
-      [...initialContent.requests]
+      [...requests]
         .filter((request) => !request.deletedAt)
         .sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         ),
-    [initialContent.requests],
+    [requests],
   );
 
   const filtered = items.filter((request) => {
@@ -224,6 +261,14 @@ export function DemandesManager({
                   Ouvrir
                   <ArrowRightIcon className="h-4 w-4" />
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => setDeletingTarget(request)}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-red-300 bg-white text-red-600 transition-colors hover:bg-red-600 hover:text-white"
+                  aria-label={`Supprimer la demande ${request.number}`}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-navy-50 pt-4 text-xs text-navy-600">
                 <span className="inline-flex items-center gap-1.5">
@@ -245,6 +290,17 @@ export function DemandesManager({
           ))}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={deletingTarget !== null}
+        title="Supprimer cette demande ?"
+        description={`La demande ${deletingTarget?.number ?? ""} sera déplacée vers la corbeille. Elle pourra être restaurée depuis l'Admin.`}
+        confirmLabel="Supprimer"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeletingTarget(null)}
+      />
+
+      <Toast toast={toast} />
     </div>
   );
 }
